@@ -1,6 +1,38 @@
 [
     {
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\layout_activity_home.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_home.xml"
+    },
+    {
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\layout_activity_quick_note.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_quick_note.xml"
+    },
+    {
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\layout_activity_photo_documentation.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_photo_documentation.xml"
+    },
+    {
         "merged": "com.fll.archaeologyform.app-debug-35:/layout_activity_main.xml.flat",
         "source": "com.fll.archaeologyform.app-main-37:/layout/activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\layout_activity_records.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_records.xml"
+    },
+    {
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\drawable_circle_bg_navy.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\drawable\\circle_bg_navy.xml"
+    },
+    {
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\drawable_circle_bg_blue.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\drawable\\circle_bg_blue.xml"
+    },
+    {
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\xml_file_paths.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\xml\\file_paths.xml"
     }
 ]

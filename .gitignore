@@ -1,0 +1,24 @@
+# Local configuration — contains SDK path and secrets
+local.properties
+
+# Build output
+build/
+app/build/
+.gradle/
+
+# Android Studio
+*.iml
+.idea/
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+
+# Kotlin
+*.class
+*.jar
+*.aar
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh api:*)",
+      "mcp__ide__getDiagnostics",
+      "Read(//c/Program Files/**)"
+    ]
+  }
+}

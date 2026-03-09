@@ -11,12 +11,14 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        // Updated to the correct Meta Wearables repository from the link provided
         maven {
             url = uri("https://maven.pkg.github.com/facebook/meta-wearables-dat-android")
             credentials {
-                username = github_username
-                password = github_token
+                def localProps = new Properties()
+                def localFile = new File(rootDir, "local.properties")
+                if (localFile.exists()) localProps.load(localFile.newInputStream())
+                username = localProps.getProperty("github_username") ?: github_username
+                password = localProps.getProperty("github_token") ?: github_token
             }
         }
     }

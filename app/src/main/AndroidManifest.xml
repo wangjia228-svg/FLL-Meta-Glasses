@@ -4,29 +4,42 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <application
         android:name=".ArchaeologyApplication"
         android:allowBackup="true"
-        android:label="Archaeology Form"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+        android:label="MARP"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <!-- Meta SDK Configuration - Developer Mode -->
         <meta-data
             android:name="com.meta.wearable.mwdat.APPLICATION_ID"
             android:value="0" />
 
+        <!-- Home screen - launcher -->
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
             android:exported="true">
-            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
 
-            <!-- Callback scheme Meta AI uses to return to your app -->
+        <!-- Field Record (Voice + Photo from Glasses) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -34,6 +47,23 @@
                 <data android:scheme="archaeologyform" />
             </intent-filter>
         </activity>
+
+        <!-- Records Viewer -->
+        <activity
+            android:name=".RecordsActivity"
+            android:exported="false" />
+
+        <!-- FileProvider for phone camera fallback URIs -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
 
 </manifest>

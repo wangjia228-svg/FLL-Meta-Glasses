@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F2F5FB">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1B2A4A"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="28dp"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MARP"
+                android:textColor="#FFFFFF"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mixed-Reality Archaeology Research Platform"
+                android:textColor="#A0B0CC"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnHandsFreeToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:text="&#127908; OFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#555555"
+            style="@style/Widget.MaterialComponents.Button" />
+    </LinearLayout>
+
+    <!-- Glasses Status Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#243556"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="12dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvGlassesIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&#9899;"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvGlassesStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Meta Glasses not connected"
+            android:textSize="13sp"
+            android:textColor="#A0B0CC"
+            android:layout_marginStart="10dp" />
+
+        <Button
+            android:id="@+id/btnConnectGlasses"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="Connect"
+            android:textSize="11sp"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#3D7EE8"
+            style="@style/Widget.MaterialComponents.Button" />
+    </LinearLayout>
+
+    <!-- Hands-Free Active Banner -->
+    <TextView
+        android:id="@+id/tvHandsFreeBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="&#127908;  HANDS-FREE ACTIVE — All screens are voice-guided"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:background="#22AA22"
+        android:letterSpacing="0.03"
+        android:visibility="gone" />
+
+    <!-- Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Section label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FIELD TOOLS"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="#8A9BB5"
+                android:letterSpacing="0.15"
+                android:layout_marginBottom="12dp" />
+
+            <!-- New Field Record Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardVoiceForm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+
+                    <!-- Icon Box -->
+                    <LinearLayout
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:background="@drawable/circle_bg_navy"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="&#128247;"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+
+                    <!-- Text -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="New Field Record"
+                            android:textSize="17sp"
+                            android:textStyle="bold"
+                            android:textColor="#1B2A4A" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Capture photo, GPS, and voice documentation"
+                            android:textSize="13sp"
+                            android:textColor="#6B7C93"
+                            android:layout_marginTop="3dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="›"
+                        android:textSize="24sp"
+                        android:textColor="#C0CCDD" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Field Records Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewRecords"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
+
+                    <!-- Icon Box -->
+                    <LinearLayout
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:background="@drawable/circle_bg_blue"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="&#128203;"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+
+                    <!-- Text -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Field Records"
+                            android:textSize="17sp"
+                            android:textStyle="bold"
+                            android:textColor="#1B2A4A" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View and review saved field documentation"
+                            android:textSize="13sp"
+                            android:textColor="#6B7C93"
+                            android:layout_marginTop="3dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="›"
+                        android:textSize="24sp"
+                        android:textColor="#C0CCDD" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Footer -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MARP v2.0  ·  Meta Glasses Edition"
+                android:textSize="11sp"
+                android:textColor="#B0BCCC"
+                android:gravity="center"
+                android:layout_marginTop="20dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

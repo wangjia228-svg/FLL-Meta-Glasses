@@ -5,6 +5,7 @@ import com.meta.wearable.dat.core.Wearables
 
 class ArchaeologyApplication : Application() {
     override fun onCreate() {
+
         super.onCreate()
         
         // Initialize Meta Wearables SDK

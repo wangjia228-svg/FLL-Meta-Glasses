@@ -29,10 +29,10 @@ com.fll.archaeologyform.app-drawerlayout-1.1.1-27 C:\Users\evan_\.gradle\caches\
 com.fll.archaeologyform.app-core-1.13.1-28 C:\Users\evan_\.gradle\caches\transforms-3\edd4210bbf9ede482d740e7be443e7f9\transformed\core-1.13.1\res
 com.fll.archaeologyform.app-jetified-lifecycle-service-2.9.4-29 C:\Users\evan_\.gradle\caches\transforms-3\f50cfdc4ed26fcbe2177bb9717b15136\transformed\jetified-lifecycle-service-2.9.4\res
 com.fll.archaeologyform.app-transition-1.2.0-30 C:\Users\evan_\.gradle\caches\transforms-3\f65af34dbc0df504827d98480ce93d4b\transformed\transition-1.2.0\res
-com.fll.archaeologyform.app-pngs-31 C:\Users\evan_\Downloads\FLL_Meta_Glasses_v5\app\build\generated\res\pngs\debug
-com.fll.archaeologyform.app-resValues-32 C:\Users\evan_\Downloads\FLL_Meta_Glasses_v5\app\build\generated\res\resValues\debug
-com.fll.archaeologyform.app-packageDebugResources-33 C:\Users\evan_\Downloads\FLL_Meta_Glasses_v5\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.fll.archaeologyform.app-packageDebugResources-34 C:\Users\evan_\Downloads\FLL_Meta_Glasses_v5\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.fll.archaeologyform.app-debug-35 C:\Users\evan_\Downloads\FLL_Meta_Glasses_v5\app\build\intermediates\merged_res\debug\mergeDebugResources
-com.fll.archaeologyform.app-debug-36 C:\Users\evan_\Downloads\FLL_Meta_Glasses_v5\app\src\debug\res
-com.fll.archaeologyform.app-main-37 C:\Users\evan_\Downloads\FLL_Meta_Glasses_v5\app\src\main\res
+com.fll.archaeologyform.app-pngs-31 C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\build\generated\res\pngs\debug
+com.fll.archaeologyform.app-resValues-32 C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\build\generated\res\resValues\debug
+com.fll.archaeologyform.app-packageDebugResources-33 C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.fll.archaeologyform.app-packageDebugResources-34 C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.fll.archaeologyform.app-debug-35 C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.fll.archaeologyform.app-debug-36 C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\debug\res
+com.fll.archaeologyform.app-main-37 C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\res

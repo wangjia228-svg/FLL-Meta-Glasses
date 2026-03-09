@@ -5,10 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ScrollView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.fll.archaeologyform.R;
@@ -18,63 +21,113 @@ import java.lang.String;
 
 public final class ActivityMainBinding implements ViewBinding {
   @NonNull
-  private final ScrollView rootView;
+  private final LinearLayout rootView;
 
   @NonNull
-  public final Button connectGlassesBtn;
+  public final ImageButton btnBack;
 
   @NonNull
-  public final TextView connectionStatus;
+  public final Button btnHandsFreeToggle;
 
   @NonNull
-  public final TextView currentQuestion;
+  public final Button btnImportPhoto;
 
   @NonNull
-  public final TextView formDataText;
+  public final Button btnRetryListen;
 
   @NonNull
-  public final TextView formTypeText;
+  public final Button btnSaveRecord;
 
   @NonNull
-  public final TextView glassesStatus;
+  public final Button btnTakePhoto;
 
   @NonNull
-  public final TextView progressText;
+  public final CardView cardFieldNotes;
 
   @NonNull
-  public final Button resetBtn;
+  public final CardView cardPhoto;
 
   @NonNull
-  public final Button startFormBtn;
+  public final CardView cardVoiceQuestions;
 
   @NonNull
-  public final TextView statusText;
+  public final ImageView ivPhoto;
 
   @NonNull
-  public final Button stopBtn;
+  public final LinearLayout layoutMetadata;
 
-  private ActivityMainBinding(@NonNull ScrollView rootView, @NonNull Button connectGlassesBtn,
-      @NonNull TextView connectionStatus, @NonNull TextView currentQuestion,
-      @NonNull TextView formDataText, @NonNull TextView formTypeText,
-      @NonNull TextView glassesStatus, @NonNull TextView progressText, @NonNull Button resetBtn,
-      @NonNull Button startFormBtn, @NonNull TextView statusText, @NonNull Button stopBtn) {
+  @NonNull
+  public final TextView tvCurrentQuestion;
+
+  @NonNull
+  public final TextView tvDateTime;
+
+  @NonNull
+  public final TextView tvFieldNotes;
+
+  @NonNull
+  public final TextView tvHandsFreeBar;
+
+  @NonNull
+  public final TextView tvLocation;
+
+  @NonNull
+  public final TextView tvPhotoStatus;
+
+  @NonNull
+  public final TextView tvPhotoStepLabel;
+
+  @NonNull
+  public final TextView tvProgressText;
+
+  @NonNull
+  public final TextView tvStepIndicator;
+
+  @NonNull
+  public final TextView tvVoiceQuestionsLabel;
+
+  @NonNull
+  public final TextView tvVoiceStatus;
+
+  private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull ImageButton btnBack,
+      @NonNull Button btnHandsFreeToggle, @NonNull Button btnImportPhoto,
+      @NonNull Button btnRetryListen, @NonNull Button btnSaveRecord, @NonNull Button btnTakePhoto,
+      @NonNull CardView cardFieldNotes, @NonNull CardView cardPhoto,
+      @NonNull CardView cardVoiceQuestions, @NonNull ImageView ivPhoto,
+      @NonNull LinearLayout layoutMetadata, @NonNull TextView tvCurrentQuestion,
+      @NonNull TextView tvDateTime, @NonNull TextView tvFieldNotes,
+      @NonNull TextView tvHandsFreeBar, @NonNull TextView tvLocation,
+      @NonNull TextView tvPhotoStatus, @NonNull TextView tvPhotoStepLabel,
+      @NonNull TextView tvProgressText, @NonNull TextView tvStepIndicator,
+      @NonNull TextView tvVoiceQuestionsLabel, @NonNull TextView tvVoiceStatus) {
     this.rootView = rootView;
-    this.connectGlassesBtn = connectGlassesBtn;
-    this.connectionStatus = connectionStatus;
-    this.currentQuestion = currentQuestion;
-    this.formDataText = formDataText;
-    this.formTypeText = formTypeText;
-    this.glassesStatus = glassesStatus;
-    this.progressText = progressText;
-    this.resetBtn = resetBtn;
-    this.startFormBtn = startFormBtn;
-    this.statusText = statusText;
-    this.stopBtn = stopBtn;
+    this.btnBack = btnBack;
+    this.btnHandsFreeToggle = btnHandsFreeToggle;
+    this.btnImportPhoto = btnImportPhoto;
+    this.btnRetryListen = btnRetryListen;
+    this.btnSaveRecord = btnSaveRecord;
+    this.btnTakePhoto = btnTakePhoto;
+    this.cardFieldNotes = cardFieldNotes;
+    this.cardPhoto = cardPhoto;
+    this.cardVoiceQuestions = cardVoiceQuestions;
+    this.ivPhoto = ivPhoto;
+    this.layoutMetadata = layoutMetadata;
+    this.tvCurrentQuestion = tvCurrentQuestion;
+    this.tvDateTime = tvDateTime;
+    this.tvFieldNotes = tvFieldNotes;
+    this.tvHandsFreeBar = tvHandsFreeBar;
+    this.tvLocation = tvLocation;
+    this.tvPhotoStatus = tvPhotoStatus;
+    this.tvPhotoStepLabel = tvPhotoStepLabel;
+    this.tvProgressText = tvProgressText;
+    this.tvStepIndicator = tvStepIndicator;
+    this.tvVoiceQuestionsLabel = tvVoiceQuestionsLabel;
+    this.tvVoiceStatus = tvVoiceStatus;
   }
 
   @Override
   @NonNull
-  public ScrollView getRoot() {
+  public LinearLayout getRoot() {
     return rootView;
   }
 
@@ -99,75 +152,143 @@ public final class ActivityMainBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.connectGlassesBtn;
-      Button connectGlassesBtn = ViewBindings.findChildViewById(rootView, id);
-      if (connectGlassesBtn == null) {
+      id = R.id.btnBack;
+      ImageButton btnBack = ViewBindings.findChildViewById(rootView, id);
+      if (btnBack == null) {
         break missingId;
       }
 
-      id = R.id.connectionStatus;
-      TextView connectionStatus = ViewBindings.findChildViewById(rootView, id);
-      if (connectionStatus == null) {
+      id = R.id.btnHandsFreeToggle;
+      Button btnHandsFreeToggle = ViewBindings.findChildViewById(rootView, id);
+      if (btnHandsFreeToggle == null) {
         break missingId;
       }
 
-      id = R.id.currentQuestion;
-      TextView currentQuestion = ViewBindings.findChildViewById(rootView, id);
-      if (currentQuestion == null) {
+      id = R.id.btnImportPhoto;
+      Button btnImportPhoto = ViewBindings.findChildViewById(rootView, id);
+      if (btnImportPhoto == null) {
         break missingId;
       }
 
-      id = R.id.formDataText;
-      TextView formDataText = ViewBindings.findChildViewById(rootView, id);
-      if (formDataText == null) {
+      id = R.id.btnRetryListen;
+      Button btnRetryListen = ViewBindings.findChildViewById(rootView, id);
+      if (btnRetryListen == null) {
         break missingId;
       }
 
-      id = R.id.formTypeText;
-      TextView formTypeText = ViewBindings.findChildViewById(rootView, id);
-      if (formTypeText == null) {
+      id = R.id.btnSaveRecord;
+      Button btnSaveRecord = ViewBindings.findChildViewById(rootView, id);
+      if (btnSaveRecord == null) {
         break missingId;
       }
 
-      id = R.id.glassesStatus;
-      TextView glassesStatus = ViewBindings.findChildViewById(rootView, id);
-      if (glassesStatus == null) {
+      id = R.id.btnTakePhoto;
+      Button btnTakePhoto = ViewBindings.findChildViewById(rootView, id);
+      if (btnTakePhoto == null) {
         break missingId;
       }
 
-      id = R.id.progressText;
-      TextView progressText = ViewBindings.findChildViewById(rootView, id);
-      if (progressText == null) {
+      id = R.id.cardFieldNotes;
+      CardView cardFieldNotes = ViewBindings.findChildViewById(rootView, id);
+      if (cardFieldNotes == null) {
         break missingId;
       }
 
-      id = R.id.resetBtn;
-      Button resetBtn = ViewBindings.findChildViewById(rootView, id);
-      if (resetBtn == null) {
+      id = R.id.cardPhoto;
+      CardView cardPhoto = ViewBindings.findChildViewById(rootView, id);
+      if (cardPhoto == null) {
         break missingId;
       }
 
-      id = R.id.startFormBtn;
-      Button startFormBtn = ViewBindings.findChildViewById(rootView, id);
-      if (startFormBtn == null) {
+      id = R.id.cardVoiceQuestions;
+      CardView cardVoiceQuestions = ViewBindings.findChildViewById(rootView, id);
+      if (cardVoiceQuestions == null) {
         break missingId;
       }
 
-      id = R.id.statusText;
-      TextView statusText = ViewBindings.findChildViewById(rootView, id);
-      if (statusText == null) {
+      id = R.id.ivPhoto;
+      ImageView ivPhoto = ViewBindings.findChildViewById(rootView, id);
+      if (ivPhoto == null) {
         break missingId;
       }
 
-      id = R.id.stopBtn;
-      Button stopBtn = ViewBindings.findChildViewById(rootView, id);
-      if (stopBtn == null) {
+      id = R.id.layoutMetadata;
+      LinearLayout layoutMetadata = ViewBindings.findChildViewById(rootView, id);
+      if (layoutMetadata == null) {
         break missingId;
       }
 
-      return new ActivityMainBinding((ScrollView) rootView, connectGlassesBtn, connectionStatus,
-          currentQuestion, formDataText, formTypeText, glassesStatus, progressText, resetBtn,
-          startFormBtn, statusText, stopBtn);
+      id = R.id.tvCurrentQuestion;
+      TextView tvCurrentQuestion = ViewBindings.findChildViewById(rootView, id);
+      if (tvCurrentQuestion == null) {
+        break missingId;
+      }
+
+      id = R.id.tvDateTime;
+      TextView tvDateTime = ViewBindings.findChildViewById(rootView, id);
+      if (tvDateTime == null) {
+        break missingId;
+      }
+
+      id = R.id.tvFieldNotes;
+      TextView tvFieldNotes = ViewBindings.findChildViewById(rootView, id);
+      if (tvFieldNotes == null) {
+        break missingId;
+      }
+
+      id = R.id.tvHandsFreeBar;
+      TextView tvHandsFreeBar = ViewBindings.findChildViewById(rootView, id);
+      if (tvHandsFreeBar == null) {
+        break missingId;
+      }
+
+      id = R.id.tvLocation;
+      TextView tvLocation = ViewBindings.findChildViewById(rootView, id);
+      if (tvLocation == null) {
+        break missingId;
+      }
+
+      id = R.id.tvPhotoStatus;
+      TextView tvPhotoStatus = ViewBindings.findChildViewById(rootView, id);
+      if (tvPhotoStatus == null) {
+        break missingId;
+      }
+
+      id = R.id.tvPhotoStepLabel;
+      TextView tvPhotoStepLabel = ViewBindings.findChildViewById(rootView, id);
+      if (tvPhotoStepLabel == null) {
+        break missingId;
+      }
+
+      id = R.id.tvProgressText;
+      TextView tvProgressText = ViewBindings.findChildViewById(rootView, id);
+      if (tvProgressText == null) {
+        break missingId;
+      }
+
+      id = R.id.tvStepIndicator;
+      TextView tvStepIndicator = ViewBindings.findChildViewById(rootView, id);
+      if (tvStepIndicator == null) {
+        break missingId;
+      }
+
+      id = R.id.tvVoiceQuestionsLabel;
+      TextView tvVoiceQuestionsLabel = ViewBindings.findChildViewById(rootView, id);
+      if (tvVoiceQuestionsLabel == null) {
+        break missingId;
+      }
+
+      id = R.id.tvVoiceStatus;
+      TextView tvVoiceStatus = ViewBindings.findChildViewById(rootView, id);
+      if (tvVoiceStatus == null) {
+        break missingId;
+      }
+
+      return new ActivityMainBinding((LinearLayout) rootView, btnBack, btnHandsFreeToggle,
+          btnImportPhoto, btnRetryListen, btnSaveRecord, btnTakePhoto, cardFieldNotes, cardPhoto,
+          cardVoiceQuestions, ivPhoto, layoutMetadata, tvCurrentQuestion, tvDateTime, tvFieldNotes,
+          tvHandsFreeBar, tvLocation, tvPhotoStatus, tvPhotoStepLabel, tvProgressText,
+          tvStepIndicator, tvVoiceQuestionsLabel, tvVoiceStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

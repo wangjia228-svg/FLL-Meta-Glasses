@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.fll.archaeologyform"
-        minSdk 29 // Increased from 28 to 29 to support Meta Wearables SDK
+        minSdk 29
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -46,4 +46,5 @@ dependencies {
     
     // Meta Wearables Device Access Toolkit
     implementation 'com.meta.wearable:mwdat-core:0.4.0'
+    implementation 'com.meta.wearable:mwdat-camera:0.4.0'
 }
