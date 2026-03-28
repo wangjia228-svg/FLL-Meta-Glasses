@@ -79,6 +79,11 @@
             android:name="com.fll.archaeologyform.RecordsActivity"
             android:exported="false" />
 
+        <!-- Record Detail -->
+        <activity
+            android:name="com.fll.archaeologyform.RecordDetailActivity"
+            android:exported="false" />
+
         <!-- FileProvider for phone camera fallback URIs -->
         <provider
             android:name="androidx.core.content.FileProvider"

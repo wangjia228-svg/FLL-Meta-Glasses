@@ -53,6 +53,11 @@
             android:name=".RecordsActivity"
             android:exported="false" />
 
+        <!-- Record Detail -->
+        <activity
+            android:name=".RecordDetailActivity"
+            android:exported="false" />
+
         <!-- FileProvider for phone camera fallback URIs -->
         <provider
             android:name="androidx.core.content.FileProvider"

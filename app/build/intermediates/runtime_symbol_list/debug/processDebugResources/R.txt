@@ -3175,6 +3175,7 @@ int id bounceEnd 0x7f080060
 int id bounceStart 0x7f080061
 int id btnBack 0x7f0801fc
 int id btnClear 0x7f0801fd
+int id btnConnect 0x7f080229
 int id btnConnectGlasses 0x7f0801fe
 int id btnHandsFreeToggle 0x7f08021d
 int id btnImportPhoto 0x7f080223
@@ -3187,7 +3188,9 @@ int id buttonPanel 0x7f080062
 int id cache_measures 0x7f080063
 int id callMeasure 0x7f080064
 int id cancel_button 0x7f080065
+int id cardConnect 0x7f08022a
 int id cardFieldNotes 0x7f080217
+int id cardGps 0x7f08022d
 int id cardMetadata 0x7f080204
 int id cardNotes 0x7f080205
 int id cardPhoto 0x7f080224
@@ -3320,11 +3323,13 @@ int id invisible 0x7f0800e6
 int id inward 0x7f0800e7
 int id italic 0x7f0800e8
 int id item_touch_helper_previous_elevation 0x7f0800e9
+int id ivDetailPhoto 0x7f08022e
 int id ivPhoto 0x7f08020b
 int id jumpToEnd 0x7f0800ea
 int id jumpToStart 0x7f0800eb
 int id labeled 0x7f0800ec
 int id layout 0x7f0800ed
+int id layoutFields 0x7f08022f
 int id layoutMetadata 0x7f080218
 int id left 0x7f0800ee
 int id leftToRight 0x7f0800ef
@@ -3568,8 +3573,12 @@ int id transition_position 0x7f0801e0
 int id transition_scene_layoutid_cache 0x7f0801e1
 int id transition_transform 0x7f0801e2
 int id triangle 0x7f0801e3
+int id tvConnectLabel 0x7f08022b
+int id tvConnectStatus 0x7f08022c
 int id tvCurrentQuestion 0x7f08020d
 int id tvDateTime 0x7f08020e
+int id tvDetailDate 0x7f080230
+int id tvDetailGps 0x7f080231
 int id tvFieldNotes 0x7f08020f
 int id tvGlassesIcon 0x7f080210
 int id tvGlassesStatus 0x7f080211
@@ -3726,6 +3735,7 @@ int layout activity_home 0x7f0b006c
 int layout activity_main 0x7f0b001c
 int layout activity_photo_documentation 0x7f0b006d
 int layout activity_quick_note 0x7f0b006e
+int layout activity_record_detail 0x7f0b0070
 int layout activity_records 0x7f0b006f
 int layout custom_dialog 0x7f0b001d
 int layout design_bottom_navigation_item 0x7f0b001e
