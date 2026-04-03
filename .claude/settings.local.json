@@ -3,30 +3,7 @@
     "allow": [
       "Bash(gh api:*)",
       "mcp__ide__getDiagnostics",
-      "Read(//c/Program Files/**)",
-      "Read(//c/tmp/**)",
-      "Bash(unzip -q /c/Users/evan_/.gradle/caches/modules-2/files-2.1/com.meta.wearable/mwdat-camera/0.4.0/335e5d64a4d2f3b4006470a33efad3e90dde55af/mwdat-camera-0.4.0.aar)",
-      "Read(//tmp/**)",
-      "Bash(unzip -q classes.jar)",
-      "Bash(ls:*)",
-      "Bash(javap:*)",
-      "Bash(xargs:*)",
-      "WebSearch",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:wearables.developer.meta.com)",
-      "WebFetch(domain:developers.meta.com)",
-      "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(curl:*)",
-      "Bash(unzip:*)",
-      "Bash(grep:*)",
-      "Bash(find:*)",
-      "Bash(python3:*)",
-      "Bash(BASE=\"https://raw.githubusercontent.com/facebook/meta-wearables-dat-android/main\")",
-      "Bash(for f:*)",
-      "Bash(do)",
-      "Bash(echo \"======== $f ========\")",
-      "Bash(done)",
-      "WebFetch(domain:api.github.com)"
+      "Read(//c/Program Files/**)"
     ]
   }
 }

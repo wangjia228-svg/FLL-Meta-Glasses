@@ -3176,7 +3176,6 @@ id bounceEnd
 id bounceStart
 id btnBack
 id btnClear
-id btnConnect
 id btnConnectGlasses
 id btnHandsFreeToggle
 id btnImportPhoto
@@ -3189,9 +3188,7 @@ id buttonPanel
 id cache_measures
 id callMeasure
 id cancel_button
-id cardConnect
 id cardFieldNotes
-id cardGps
 id cardMetadata
 id cardNotes
 id cardPhoto
@@ -3324,13 +3321,11 @@ id invisible
 id inward
 id italic
 id item_touch_helper_previous_elevation
-id ivDetailPhoto
 id ivPhoto
 id jumpToEnd
 id jumpToStart
 id labeled
 id layout
-id layoutFields
 id layoutMetadata
 id left
 id leftToRight
@@ -3574,12 +3569,8 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
-id tvConnectLabel
-id tvConnectStatus
 id tvCurrentQuestion
 id tvDateTime
-id tvDetailDate
-id tvDetailGps
 id tvFieldNotes
 id tvGlassesIcon
 id tvGlassesStatus
@@ -3736,7 +3727,6 @@ layout activity_home
 layout activity_main
 layout activity_photo_documentation
 layout activity_quick_note
-layout activity_record_detail
 layout activity_records
 layout custom_dialog
 layout design_bottom_navigation_item
