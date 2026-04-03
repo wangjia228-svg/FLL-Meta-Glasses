@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.fll.archaeologyform.databinding.ActivityHomeBinding
 import com.meta.wearable.dat.core.Wearables
+import com.meta.wearable.dat.core.types.RegistrationState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -56,8 +57,9 @@ class HomeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        initBluetoothSco()
         handsFreeMode = false  // always start hands-free OFF
+        // Only init Bluetooth SCO if hands-free is actually on (avoids audio mode
+        // interfering with the Meta glasses camera stream in MainActivity)
         checkPermissions()
         setupUI()
         observeGlassesConnection()
@@ -116,6 +118,9 @@ class HomeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
         binding.cardViewRecords.setOnClickListener {
             startActivity(Intent(this, RecordsActivity::class.java))
+        }
+        binding.cardCustomForm.setOnClickListener {
+            startActivity(Intent(this, CustomFormActivity::class.java))
         }
         binding.btnConnectGlasses.setOnClickListener {
             connectGlasses()
@@ -242,38 +247,24 @@ class HomeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun connectGlasses() {
-        try {
-            val instance = try {
-                Wearables::class.java.getField("INSTANCE").get(null)
-            } catch (e: Exception) {
-                Wearables::class.java.methods.find { it.name.contains("getInstance") }?.invoke(null)
-            } ?: return
-
-            val method = instance.javaClass.methods.find {
-                it.name == "startRegistration" && it.parameterCount == 1
-            }
-            method?.invoke(instance, this)
-        } catch (e: Exception) {
-            Log.e("HomeActivity", "Connect error", e)
-        }
+        Wearables.startRegistration(this)
     }
 
     private fun observeGlassesConnection() {
         lifecycleScope.launch {
             try {
-                val instance = Wearables::class.java.getField("INSTANCE").get(null) ?: return@launch
-                val statusMethod = instance.javaClass.methods.find {
-                    it.name == "getRegistrationState" && it.parameterCount == 0
-                }
-                (statusMethod?.invoke(instance) as? kotlinx.coroutines.flow.Flow<*>)?.collectLatest { status ->
-                    val name = status.toString()
-                    if (name.contains("Registered", ignoreCase = true) || name.contains("LOW", ignoreCase = true)) {
-                        binding.tvGlassesIcon.text = "\uD83D\uDFE2"
-                        binding.tvGlassesStatus.text = "Meta Glasses connected"
-                        binding.btnConnectGlasses.visibility = View.GONE
-                    } else {
-                        binding.tvGlassesIcon.text = "⚫"
-                        binding.tvGlassesStatus.text = "Meta Glasses not connected"
+                Wearables.registrationState.collectLatest { state ->
+                    when (state) {
+                        is RegistrationState.Registered -> {
+                            binding.tvGlassesIcon.text = "\uD83D\uDFE2"
+                            binding.tvGlassesStatus.text = "Meta Glasses connected"
+                            binding.btnConnectGlasses.visibility = View.GONE
+                        }
+                        else -> {
+                            binding.tvGlassesIcon.text = "⚫"
+                            binding.tvGlassesStatus.text = "Meta Glasses not connected"
+                            binding.btnConnectGlasses.visibility = View.VISIBLE
+                        }
                     }
                 }
             } catch (e: Exception) {

@@ -1,5 +1,6 @@
 package com.fll.archaeologyform
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -62,29 +63,45 @@ class RecordsActivity : AppCompatActivity() {
 
             val typeLabel = when (type) {
                 "photo_documentation" -> "  Photo Documentation"
+                "custom_form" -> "  Custom Form"
                 else -> "  Voice Form"
             }
             addLabel(content, typeLabel, 12f, "#999999")
             addLabel(content, json.optString("datetime", "Unknown date"), 15f, "#222222")
 
-            val lat = json.optString("latitude")
-            val lon = json.optString("longitude")
-            if (lat.isNotEmpty() && lon.isNotEmpty()) {
-                addLabel(content, "GPS: $lat, $lon", 12f, "#666666")
+            if (type == "custom_form") {
+                val firstAnswer = json.optJSONArray("questions")
+                    ?.optJSONObject(0)?.optString("answer") ?: ""
+                firstAnswer.takeIf { it.isNotEmpty() }
+                    ?.let { addLabel(content, it, 14f, "#333333") }
+            } else {
+                json.optString("artifact").takeIf { it.isNotEmpty() }
+                    ?.let { addLabel(content, it, 14f, "#333333") }
             }
+            addLabel(content, json.optString("datetime", "Unknown date"), 12f, "#666666")
 
-            json.optString("depth").takeIf { it.isNotEmpty() }
-                ?.let { addLabel(content, "Depth: $it", 12f, "#555555") }
-            json.optString("stratum").takeIf { it.isNotEmpty() }
-                ?.let { addLabel(content, "Stratum: ${it.take(60)}...", 12f, "#555555") }
-            json.optString("project").takeIf { it.isNotEmpty() }
-                ?.let { addLabel(content, "Project: $it", 12f, "#555555") }
+            val lat = json.optString("latitude").toDoubleOrNull()
+            val lon = json.optString("longitude").toDoubleOrNull()
+            if (lat != null && lon != null) {
+                addLabel(content, "GPS: ${"%.2f".format(lat)}, ${"%.2f".format(lon)}", 12f, "#666666")
+            }
         } else {
             addLabel(content, "  Quick Note", 12f, "#999999")
             addLabel(content, file.readText().take(150), 13f, "#333333")
         }
 
         card.addView(content)
+        card.isClickable = true
+        card.isFocusable = true
+        card.foreground = android.graphics.drawable.RippleDrawable(
+            android.content.res.ColorStateList.valueOf(0x33000000),
+            null, null
+        )
+        card.setOnClickListener {
+            val intent = Intent(this, RecordDetailActivity::class.java)
+            intent.putExtra("file_path", file.absolutePath)
+            startActivity(intent)
+        }
         binding.recordsContainer.addView(card)
     }
 

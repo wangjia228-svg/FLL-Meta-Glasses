@@ -3,7 +3,21 @@
     "allow": [
       "Bash(gh api:*)",
       "mcp__ide__getDiagnostics",
-      "Read(//c/Program Files/**)"
+      "Read(//c/Program Files/**)",
+      "Bash(git -C \"C:/Users/evan_/OneDrive/Documents/GitHub/FLL-Meta-Glasses\" log --oneline -6)",
+      "Bash(git -C \"C:/Users/evan_/OneDrive/Documents/GitHub/FLL-Meta-Glasses\" status --short -- app/src/main/)",
+      "Bash(git:*)",
+      "Bash(ls app/src/main/java/com/fll/archaeologyform/*.kt)",
+      "Read(//tmp/mwdat_inspect/**)",
+      "Bash(jar tf:*)",
+      "Bash(python3 -c \":*)",
+      "Bash(unzip -p classes.jar)",
+      "Bash(unzip -l classes.jar)",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap\" -p /tmp/Wearables.class)",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap\" -p /tmp/RegistrationState.class 2>&1)",
+      "Read(//tmp/mwdat_cam/**)",
+      "Bash(unzip -p classes.jar com/meta/wearable/dat/camera/StreamSession.class)",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap\" -p /tmp/StreamSession.class)"
     ]
   }
 }

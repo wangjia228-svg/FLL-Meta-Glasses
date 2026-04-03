@@ -3,6 +3,9 @@
     <external-files-path
         name="archaeology_photos"
         path="Pictures/archaeology/" />
+    <external-files-path
+        name="csv_templates"
+        path="." />
     <files-path
         name="glasses_photos"
         path="photos/" />

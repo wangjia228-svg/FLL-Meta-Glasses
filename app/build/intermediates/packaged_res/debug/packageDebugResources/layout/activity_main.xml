@@ -93,6 +93,54 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- GLASSES CONNECTION step -->
+            <TextView
+                android:id="@+id/tvConnectLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GLASSES CONNECTION"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="#8A9BB5"
+                android:letterSpacing="0.12"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardConnect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/tvConnectStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Connect your Meta glasses to continue."
+                        android:textSize="14sp"
+                        android:textColor="#3D7EE8"
+                        android:gravity="center"
+                        android:layout_marginBottom="12dp" />
+
+                    <Button
+                        android:id="@+id/btnConnect"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Connect to Meta Glasses"
+                        android:textSize="14sp"
+                        android:backgroundTint="#3D7EE8" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <!-- GLASSES PHOTO label — hidden while photo taking is disabled -->
             <TextView
                 android:id="@+id/tvPhotoStepLabel"
@@ -173,7 +221,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_marginTop="12dp"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <View
                             android:layout_width="match_parent"

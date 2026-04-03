@@ -27,6 +27,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final ImageButton btnBack;
 
   @NonNull
+  public final Button btnConnect;
+
+  @NonNull
   public final Button btnHandsFreeToggle;
 
   @NonNull
@@ -42,6 +45,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final Button btnTakePhoto;
 
   @NonNull
+  public final CardView cardConnect;
+
+  @NonNull
   public final CardView cardFieldNotes;
 
   @NonNull
@@ -55,6 +61,12 @@ public final class ActivityMainBinding implements ViewBinding {
 
   @NonNull
   public final LinearLayout layoutMetadata;
+
+  @NonNull
+  public final TextView tvConnectLabel;
+
+  @NonNull
+  public final TextView tvConnectStatus;
 
   @NonNull
   public final TextView tvCurrentQuestion;
@@ -90,11 +102,12 @@ public final class ActivityMainBinding implements ViewBinding {
   public final TextView tvVoiceStatus;
 
   private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull ImageButton btnBack,
-      @NonNull Button btnHandsFreeToggle, @NonNull Button btnImportPhoto,
-      @NonNull Button btnRetryListen, @NonNull Button btnSaveRecord, @NonNull Button btnTakePhoto,
-      @NonNull CardView cardFieldNotes, @NonNull CardView cardPhoto,
-      @NonNull CardView cardVoiceQuestions, @NonNull ImageView ivPhoto,
-      @NonNull LinearLayout layoutMetadata, @NonNull TextView tvCurrentQuestion,
+      @NonNull Button btnConnect, @NonNull Button btnHandsFreeToggle,
+      @NonNull Button btnImportPhoto, @NonNull Button btnRetryListen, @NonNull Button btnSaveRecord,
+      @NonNull Button btnTakePhoto, @NonNull CardView cardConnect, @NonNull CardView cardFieldNotes,
+      @NonNull CardView cardPhoto, @NonNull CardView cardVoiceQuestions, @NonNull ImageView ivPhoto,
+      @NonNull LinearLayout layoutMetadata, @NonNull TextView tvConnectLabel,
+      @NonNull TextView tvConnectStatus, @NonNull TextView tvCurrentQuestion,
       @NonNull TextView tvDateTime, @NonNull TextView tvFieldNotes,
       @NonNull TextView tvHandsFreeBar, @NonNull TextView tvLocation,
       @NonNull TextView tvPhotoStatus, @NonNull TextView tvPhotoStepLabel,
@@ -102,16 +115,20 @@ public final class ActivityMainBinding implements ViewBinding {
       @NonNull TextView tvVoiceQuestionsLabel, @NonNull TextView tvVoiceStatus) {
     this.rootView = rootView;
     this.btnBack = btnBack;
+    this.btnConnect = btnConnect;
     this.btnHandsFreeToggle = btnHandsFreeToggle;
     this.btnImportPhoto = btnImportPhoto;
     this.btnRetryListen = btnRetryListen;
     this.btnSaveRecord = btnSaveRecord;
     this.btnTakePhoto = btnTakePhoto;
+    this.cardConnect = cardConnect;
     this.cardFieldNotes = cardFieldNotes;
     this.cardPhoto = cardPhoto;
     this.cardVoiceQuestions = cardVoiceQuestions;
     this.ivPhoto = ivPhoto;
     this.layoutMetadata = layoutMetadata;
+    this.tvConnectLabel = tvConnectLabel;
+    this.tvConnectStatus = tvConnectStatus;
     this.tvCurrentQuestion = tvCurrentQuestion;
     this.tvDateTime = tvDateTime;
     this.tvFieldNotes = tvFieldNotes;
@@ -158,6 +175,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnConnect;
+      Button btnConnect = ViewBindings.findChildViewById(rootView, id);
+      if (btnConnect == null) {
+        break missingId;
+      }
+
       id = R.id.btnHandsFreeToggle;
       Button btnHandsFreeToggle = ViewBindings.findChildViewById(rootView, id);
       if (btnHandsFreeToggle == null) {
@@ -188,6 +211,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.cardConnect;
+      CardView cardConnect = ViewBindings.findChildViewById(rootView, id);
+      if (cardConnect == null) {
+        break missingId;
+      }
+
       id = R.id.cardFieldNotes;
       CardView cardFieldNotes = ViewBindings.findChildViewById(rootView, id);
       if (cardFieldNotes == null) {
@@ -215,6 +244,18 @@ public final class ActivityMainBinding implements ViewBinding {
       id = R.id.layoutMetadata;
       LinearLayout layoutMetadata = ViewBindings.findChildViewById(rootView, id);
       if (layoutMetadata == null) {
+        break missingId;
+      }
+
+      id = R.id.tvConnectLabel;
+      TextView tvConnectLabel = ViewBindings.findChildViewById(rootView, id);
+      if (tvConnectLabel == null) {
+        break missingId;
+      }
+
+      id = R.id.tvConnectStatus;
+      TextView tvConnectStatus = ViewBindings.findChildViewById(rootView, id);
+      if (tvConnectStatus == null) {
         break missingId;
       }
 
@@ -284,9 +325,10 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((LinearLayout) rootView, btnBack, btnHandsFreeToggle,
-          btnImportPhoto, btnRetryListen, btnSaveRecord, btnTakePhoto, cardFieldNotes, cardPhoto,
-          cardVoiceQuestions, ivPhoto, layoutMetadata, tvCurrentQuestion, tvDateTime, tvFieldNotes,
+      return new ActivityMainBinding((LinearLayout) rootView, btnBack, btnConnect,
+          btnHandsFreeToggle, btnImportPhoto, btnRetryListen, btnSaveRecord, btnTakePhoto,
+          cardConnect, cardFieldNotes, cardPhoto, cardVoiceQuestions, ivPhoto, layoutMetadata,
+          tvConnectLabel, tvConnectStatus, tvCurrentQuestion, tvDateTime, tvFieldNotes,
           tvHandsFreeBar, tvLocation, tvPhotoStatus, tvPhotoStepLabel, tvProgressText,
           tvStepIndicator, tvVoiceQuestionsLabel, tvVoiceStatus);
     }

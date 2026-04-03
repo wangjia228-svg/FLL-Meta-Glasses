@@ -7,12 +7,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.media.AudioManager
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.speech.RecognitionListener
@@ -25,9 +27,30 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.fll.archaeologyform.databinding.ActivityMainBinding
+import com.meta.wearable.dat.camera.startStreamSession
+import com.meta.wearable.dat.camera.types.PhotoData
+import com.meta.wearable.dat.camera.types.StreamConfiguration
+import com.meta.wearable.dat.camera.types.VideoQuality
+import com.meta.wearable.dat.core.Wearables
+import com.meta.wearable.dat.core.selectors.AutoDeviceSelector
+import com.meta.wearable.dat.camera.types.StreamSessionState
+import com.meta.wearable.dat.core.types.Permission
+import com.meta.wearable.dat.core.types.PermissionStatus
+import com.meta.wearable.dat.core.types.RegistrationState
+import kotlin.coroutines.resume
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -50,8 +73,33 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var isListening = false
     private var ttsReady = false
     private var recordTimestamp = ""
+    private var photoTaken = false
+    private var photoInProgress = false
+    private var isRegistered = false
+
+    private var photoFile: File? = null
+    private var streamSession: com.meta.wearable.dat.camera.StreamSession? = null
 
     private val handler = Handler(Looper.getMainLooper())
+
+    // Named runnable so we can cancel pending retries
+    private val listenForPhotoRunnable = Runnable { listenForPhotoCommand() }
+
+    // Camera permission via SDK
+    private var permissionContinuation: CancellableContinuation<PermissionStatus>? = null
+    private val permissionMutex = Mutex()
+    private val permissionsResultLauncher =
+        registerForActivityResult(Wearables.RequestPermissionContract()) { result ->
+            val status = result.getOrDefault(PermissionStatus.Denied)
+            permissionContinuation?.resume(status)
+            permissionContinuation = null
+        }
+
+    // Location permission
+    private val locationPermissionLauncher =
+        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) startLocationUpdates()
+        }
 
     private val questions = listOf(
         Pair("artifact",  "What artifact was found?"),
@@ -79,7 +127,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         handsFreeMode = prefs.getBoolean("hands_free_mode", false)
 
-        initBluetoothSco()
+        if (handsFreeMode) initBluetoothSco()
         startLocationUpdates()
 
         binding.btnBack.setOnClickListener { finish() }
@@ -89,7 +137,20 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             startListening()
         }
         binding.btnHandsFreeToggle.setOnClickListener { toggleHandsFreeMode() }
+        binding.btnTakePhoto.setOnClickListener { takePhoto() }
+        binding.btnConnect.setOnClickListener {
+            binding.tvConnectStatus.text = "Opening Meta AI to register..."
+            binding.btnConnect.isEnabled = false
+            Wearables.startRegistration(this)
+        }
 
+        // Photo step hidden until registered
+        binding.tvPhotoStepLabel.visibility = View.GONE
+        binding.tvPhotoStatus.visibility = View.GONE
+        binding.btnTakePhoto.visibility = View.GONE
+        binding.layoutMetadata.visibility = View.GONE
+
+        observeRegistrationState()
         applyHandsFreeUI()
     }
 
@@ -99,7 +160,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         handsFreeMode = !handsFreeMode
         prefs.edit().putBoolean("hands_free_mode", handsFreeMode).apply()
         applyHandsFreeUI()
-        speak(if (handsFreeMode) "Hands-free mode on." else "Hands-free mode off.")
+        if (handsFreeMode) {
+            initBluetoothSco()
+            speak("Hands-free mode on.")
+        } else {
+            @Suppress("DEPRECATION")
+            audioManager.stopBluetoothSco()
+            audioManager.isBluetoothScoOn = false
+            audioManager.mode = AudioManager.MODE_NORMAL
+        }
     }
 
     private fun applyHandsFreeUI() {
@@ -114,6 +183,35 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             binding.btnHandsFreeToggle.backgroundTintList =
                 ColorStateList.valueOf(Color.parseColor("#555555"))
             binding.tvHandsFreeBar.visibility = View.GONE
+        }
+    }
+
+    // ── Registration ──────────────────────────────────────────────────────────
+
+    private fun observeRegistrationState() {
+        lifecycleScope.launch {
+            Wearables.registrationState.collect { state ->
+                when (state) {
+                    is RegistrationState.Registered -> {
+                        val firstRegistration = !isRegistered
+                        isRegistered = true
+                        binding.tvConnectLabel.visibility = View.GONE
+                        binding.cardConnect.visibility = View.GONE
+                        // Check/request camera permission before showing the photo button
+                        setupCameraPermission(firstRegistration)
+                    }
+                    else -> {
+                        isRegistered = false
+                        binding.tvConnectLabel.visibility = View.VISIBLE
+                        binding.cardConnect.visibility = View.VISIBLE
+                        binding.tvConnectStatus.text = "Connect your Meta glasses to continue."
+                        binding.btnConnect.isEnabled = true
+                        binding.tvPhotoStepLabel.visibility = View.GONE
+                        binding.tvPhotoStatus.visibility = View.GONE
+                        binding.btnTakePhoto.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 
@@ -149,6 +247,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             } catch (e: Exception) {
                 Log.w("MARP", "Location error: ${e.message}")
             }
+        } else {
+            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
@@ -160,25 +260,286 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             "GPS: Acquiring location..."
     }
 
+    // ── Photo (Meta Glasses Camera) ────────────────────────────────────────────
+
+    private var streamStateJob: Job? = null
+    private var videoStreamJob: Job? = null
+
+    private suspend fun requestWearablesPermission(permission: Permission): PermissionStatus =
+        permissionMutex.withLock {
+            suspendCancellableCoroutine { continuation ->
+                permissionContinuation = continuation
+                continuation.invokeOnCancellation { permissionContinuation = null }
+                permissionsResultLauncher.launch(permission)
+            }
+        }
+
+    private fun setupCameraPermission(firstRegistration: Boolean) {
+        lifecycleScope.launch {
+            val status = Wearables.checkPermissionStatus(Permission.CAMERA).getOrNull()
+            if (status == PermissionStatus.Granted) {
+                showPhotoStep(firstRegistration)
+            } else {
+                binding.tvPhotoStepLabel.visibility = View.VISIBLE
+                binding.tvPhotoStatus.visibility = View.VISIBLE
+                binding.tvPhotoStatus.text = "Requesting camera permission..."
+                val granted = requestWearablesPermission(Permission.CAMERA)
+                if (granted == PermissionStatus.Granted) {
+                    showPhotoStep(firstRegistration)
+                } else {
+                    binding.tvPhotoStatus.text = "Camera permission denied. Tap to retry."
+                    binding.btnTakePhoto.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun showPhotoStep(firstRegistration: Boolean) {
+        binding.tvPhotoStepLabel.visibility = View.VISIBLE
+        binding.tvPhotoStatus.visibility = View.VISIBLE
+        binding.btnTakePhoto.text = "Take Photo via Glasses Camera"
+        binding.btnTakePhoto.visibility = View.VISIBLE
+        binding.btnTakePhoto.isEnabled = false
+        startStreamForPhoto()
+
+        if (handsFreeMode && ttsReady && firstRegistration) {
+            handler.removeCallbacks(listenForPhotoRunnable)
+            speak("Connecting to glasses camera.")
+        }
+    }
+
+    /**
+     * Starts (or restarts) the stream session. The button is disabled until
+     * STREAMING is reached, matching the sample app pattern.
+     */
+    private fun startStreamForPhoto() {
+        streamStateJob?.cancel()
+        videoStreamJob?.cancel()
+        try { streamSession?.close() } catch (_: Exception) {}
+        streamSession = null
+
+        binding.tvPhotoStatus.text = "Connecting to glasses..."
+        binding.btnTakePhoto.isEnabled = false
+
+        val session = Wearables.startStreamSession(
+            applicationContext,
+            AutoDeviceSelector(),
+            StreamConfiguration(VideoQuality.MEDIUM, 24)
+        )
+        streamSession = session
+
+        // Must collect videoStream for session to advance to STREAMING
+        videoStreamJob = lifecycleScope.launch {
+            session.videoStream.collect { }
+        }
+
+        streamStateJob = lifecycleScope.launch {
+            session.state.collect { state ->
+                Log.d("MARP", "Stream state: $state")
+                if (state != StreamSessionState.STOPPED && state != StreamSessionState.CLOSED) {
+                    binding.tvPhotoStatus.text = when (state) {
+                        StreamSessionState.STARTING  -> "Connecting to glasses..."
+                        StreamSessionState.STARTED   -> "Camera warming up..."
+                        StreamSessionState.STREAMING -> "Camera ready. Tap to capture."
+                        StreamSessionState.STOPPING  -> "Camera stopping..."
+                        else                         -> state.name
+                    }
+                }
+                when (state) {
+                    StreamSessionState.STREAMING -> {
+                        binding.btnTakePhoto.isEnabled = !photoTaken && !photoInProgress
+                        binding.btnTakePhoto.text = "Take Photo via Glasses Camera"
+                        if (handsFreeMode && ttsReady && !photoTaken && !photoInProgress) {
+                            handler.removeCallbacks(listenForPhotoRunnable)
+                            speak("Camera ready. Say take photo.") {
+                                handler.postDelayed(listenForPhotoRunnable, 300)
+                            }
+                        }
+                    }
+                    StreamSessionState.STOPPED, StreamSessionState.CLOSED -> {
+                        if (!photoTaken) {
+                            videoStreamJob?.cancel()
+                            streamSession = null
+                            binding.tvPhotoStatus.text =
+                                "Camera stopped. Make sure glasses are open (not folded) " +
+                                "and Developer Mode is enabled in the Meta AI app."
+                            binding.btnTakePhoto.isEnabled = true
+                            binding.btnTakePhoto.text = "Retry Camera"
+                        }
+                    }
+                    else -> binding.btnTakePhoto.isEnabled = false
+                }
+            }
+        }
+    }
+
+    private fun takePhoto() {
+        if (photoTaken || photoInProgress) return
+
+        val session = streamSession
+        // If button was tapped in STOPPED/CLOSED state, restart the stream
+        if (session == null) {
+            startStreamForPhoto()
+            return
+        }
+
+        photoInProgress = true
+        handler.removeCallbacks(listenForPhotoRunnable)
+        speechRecognizer.cancel()
+        isListening = false
+        binding.btnTakePhoto.isEnabled = false
+        binding.tvPhotoStatus.text = "Taking photo..."
+
+        lifecycleScope.launch {
+            try {
+                val result = session.capturePhoto()
+
+                val ts = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(Date())
+                recordTimestamp = ts
+                val dir = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "archaeology")
+                dir.mkdirs()
+
+                result
+                    .onSuccess { photoData ->
+                        // Read all photo data BEFORE closing the session.
+                        // The ByteBuffer in PhotoData.HEIC is backed by the session's
+                        // native memory — closing the session first frees it.
+                        val bytes: ByteArray? = when (photoData) {
+                            is PhotoData.Bitmap -> null          // bitmap already in JVM heap
+                            is PhotoData.HEIC -> {
+                                ByteArray(photoData.data.remaining())
+                                    .also { photoData.data.get(it) }
+                            }
+                        }
+
+                        // Now safe to tear down the stream
+                        streamStateJob?.cancel()
+                        videoStreamJob?.cancel()
+                        try { session.close() } catch (_: Exception) {}
+                        streamSession = null
+
+                        val bmp: android.graphics.Bitmap? = when (photoData) {
+                            is PhotoData.Bitmap -> photoData.bitmap
+                            is PhotoData.HEIC -> withContext(Dispatchers.IO) {
+                                android.graphics.BitmapFactory.decodeByteArray(bytes!!, 0, bytes.size)
+                            }
+                        }
+
+                        if (bmp == null) {
+                            photoInProgress = false
+                            binding.tvPhotoStatus.text = "Photo decode failed. Tap to retry."
+                            binding.btnTakePhoto.isEnabled = true
+                            return@onSuccess
+                        }
+
+                        val file = File(dir, "ARCH_$ts.jpg")
+                        withContext(Dispatchers.IO) {
+                            FileOutputStream(file).use { out ->
+                                bmp.compress(android.graphics.Bitmap.CompressFormat.JPEG, 90, out)
+                            }
+                        }
+                        photoFile = file
+                        binding.ivPhoto.setImageBitmap(bmp)
+                        binding.ivPhoto.visibility = View.VISIBLE
+                        onPhotoTaken()
+                    }
+                    .onFailure { error ->
+                        streamStateJob?.cancel()
+                        videoStreamJob?.cancel()
+                        try { session.close() } catch (_: Exception) {}
+                        streamSession = null
+
+                        Log.e("MARP", "capturePhoto failed: ${error.message}")
+                        photoInProgress = false
+                        binding.tvPhotoStatus.text = "Photo capture failed. Tap to retry."
+                        binding.btnTakePhoto.isEnabled = true
+                    }
+
+            } catch (e: Exception) {
+                streamStateJob?.cancel()
+                videoStreamJob?.cancel()
+                try { session.close() } catch (_: Exception) {}
+                streamSession = null
+
+                Log.e("MARP", "takePhoto exception", e)
+                photoInProgress = false
+                binding.tvPhotoStatus.text = "Error: ${e.javaClass.simpleName}. Tap to retry."
+                binding.btnTakePhoto.isEnabled = true
+            }
+        }
+    }
+
+    private fun onPhotoTaken() {
+        photoTaken = true
+        photoInProgress = false
+        binding.tvPhotoStatus.text = "Photo captured."
+        binding.btnTakePhoto.visibility = View.GONE
+
+        val display = SimpleDateFormat("MMM d, yyyy  h:mm a", Locale.getDefault()).format(Date())
+        binding.tvDateTime.text = "Date/Time: $display"
+        updateLocationDisplay()
+        binding.layoutMetadata.visibility = View.VISIBLE
+
+        speak("Photo captured. Starting field documentation.") {
+            handler.postDelayed({ startQuestionsFlow() }, 400)
+        }
+    }
+
+    // ── Hands-free photo command ───────────────────────────────────────────────
+
+    private fun listenForPhotoCommand() {
+        if (isListening || photoTaken || photoInProgress) return
+        isListening = true
+        binding.tvPhotoStatus.text = "Say 'take photo'..."
+
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+        }
+
+        speechRecognizer.setRecognitionListener(object : RecognitionListener {
+            override fun onResults(results: Bundle?) {
+                isListening = false
+                val heard = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    ?.joinToString(" ")?.lowercase() ?: ""
+                if (heard.contains("take") || heard.contains("photo") ||
+                    heard.contains("capture") || heard.contains("picture") ||
+                    heard.contains("snap")
+                ) {
+                    speak("Taking photo.") { handler.post { takePhoto() } }
+                } else {
+                    handler.postDelayed(listenForPhotoRunnable, 600)
+                }
+            }
+            override fun onError(error: Int) {
+                isListening = false
+                handler.postDelayed(listenForPhotoRunnable, 1200)
+            }
+            override fun onReadyForSpeech(params: Bundle?) {}
+            override fun onBeginningOfSpeech() {}
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() {}
+            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+        })
+
+        try {
+            speechRecognizer.startListening(intent)
+        } catch (e: Exception) {
+            isListening = false
+            handler.postDelayed(listenForPhotoRunnable, 1500)
+        }
+    }
+
     // ── Questions Flow ────────────────────────────────────────────────────────
 
     private fun startQuestionsFlow() {
-        val display = SimpleDateFormat("MMM d, yyyy  h:mm a", Locale.getDefault()).format(Date())
-        binding.tvDateTime.text = "Date/Time: $display"
-        recordTimestamp = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(Date())
-        updateLocationDisplay()
-        binding.layoutMetadata.visibility = View.VISIBLE
         binding.tvVoiceQuestionsLabel.visibility = View.VISIBLE
         binding.cardVoiceQuestions.visibility = View.VISIBLE
         binding.tvStepIndicator.text = "Voice questions"
-
-        if (handsFreeMode) {
-            speak("Starting field documentation.") {
-                handler.postDelayed({ startVoiceQuestions() }, 400)
-            }
-        } else {
-            startVoiceQuestions()
-        }
+        startVoiceQuestions()
     }
 
     // ── Voice questions ────────────────────────────────────────────────────────
@@ -227,12 +588,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 if (answer.isNotEmpty()) handleAnswer(answer)
                 else showRetry()
             }
-
             override fun onError(error: Int) {
                 isListening = false
                 showRetry()
             }
-
             override fun onReadyForSpeech(params: Bundle?) { binding.tvVoiceStatus.text = "Listening..." }
             override fun onBeginningOfSpeech() {}
             override fun onRmsChanged(rmsdB: Float) {}
@@ -269,8 +628,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             "${it.key.uppercase()}:\n  ${it.value}"
         }
 
+        currentQuestionIndex++
         speak("Got it.") {
-            currentQuestionIndex++
             handler.postDelayed({ askNextQuestion() }, 300)
         }
     }
@@ -282,7 +641,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.tvStepIndicator.text = "Ready to save"
         binding.btnSaveRecord.visibility = View.VISIBLE
         if (handsFreeMode) {
-            speak("All questions answered. Say 'save' to save, or press the save button.") {
+            speak("All questions answered. Say save to save, or cancel to discard.") {
                 handler.post { listenForSaveCommand() }
             }
         } else {
@@ -319,20 +678,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         speak("Record discarded.") { handler.postDelayed({ finish() }, 1500) }
                     }
                     else -> {
-                        speak("Say 'save' to save or 'cancel' to discard.") {
+                        speak("Say save to save or cancel to discard.") {
                             handler.postDelayed({ listenForSaveCommand() }, 300)
                         }
                     }
                 }
             }
-
             override fun onError(error: Int) {
                 isListening = false
-                speak("Say 'save' to save or 'cancel' to discard.") {
+                speak("Say save to save or cancel to discard.") {
                     handler.postDelayed({ listenForSaveCommand() }, 300)
                 }
             }
-
             override fun onReadyForSpeech(params: Bundle?) {}
             override fun onBeginningOfSpeech() {}
             override fun onRmsChanged(rmsdB: Float) {}
@@ -357,6 +714,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val json = JSONObject().apply {
             put("type", "field_record")
             put("datetime", datetime)
+            put("photo_file", photoFile?.absolutePath ?: "")
             put("latitude", currentLocation?.latitude?.toString() ?: "")
             put("longitude", currentLocation?.longitude?.toString() ?: "")
             responses.forEach { (k, v) -> put(k, v) }
@@ -379,18 +737,24 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     // ── TTS ───────────────────────────────────────────────────────────────────
 
     private fun speak(text: String, onComplete: (() -> Unit)? = null) {
+        if (!handsFreeMode) {
+            onComplete?.invoke()
+            return
+        }
         val uid = "utt_${System.currentTimeMillis()}"
         val params = Bundle().apply {
             putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_VOICE_CALL)
         }
-        if (onComplete != null) {
-            tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                override fun onStart(utteranceId: String?) {}
-                override fun onDone(utteranceId: String?) { handler.post { onComplete() } }
-                @Deprecated("Deprecated in Java")
-                override fun onError(utteranceId: String?) { handler.post { onComplete() } }
-            })
-        }
+        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {}
+            override fun onDone(utteranceId: String?) {
+                if (utteranceId == uid) handler.post { onComplete?.invoke() }
+            }
+            @Deprecated("Deprecated in Java")
+            override fun onError(utteranceId: String?) {
+                if (utteranceId == uid) handler.post { onComplete?.invoke() }
+            }
+        })
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, params, uid)
     }
 
@@ -399,7 +763,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             tts.language = Locale.US
             tts.setSpeechRate(1.1f)
             ttsReady = true
-            handler.postDelayed({ startQuestionsFlow() }, 500)
+            if (handsFreeMode && isRegistered) {
+                handler.removeCallbacks(listenForPhotoRunnable)
+                speak("Say take photo to begin.") {
+                    handler.postDelayed(listenForPhotoRunnable, 300)
+                }
+            }
         }
     }
 
@@ -407,6 +776,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        handler.removeCallbacksAndMessages(null)
+        speechRecognizer.cancel()
+        streamStateJob?.cancel()
+        videoStreamJob?.cancel()
+        try { streamSession?.close() } catch (_: Exception) { }
+        streamSession = null
         try {
             @Suppress("DEPRECATION")
             audioManager.stopBluetoothSco()
