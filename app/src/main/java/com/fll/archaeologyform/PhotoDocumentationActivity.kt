@@ -1,8 +1,10 @@
 package com.fll.archaeologyform
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
@@ -40,6 +42,8 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
     private lateinit var tts: TextToSpeech
     private lateinit var speechRecognizer: SpeechRecognizer
     private lateinit var locationManager: LocationManager
+    private lateinit var audioManager: AudioManager
+    private var scoStateReceiver: BroadcastReceiver? = null
 
     private val prefs by lazy { getSharedPreferences("marp_prefs", Context.MODE_PRIVATE) }
     private var handsFreeMode = false
@@ -86,7 +90,9 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
         tts = TextToSpeech(this, this)
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
+        initBluetoothSco()
         startLocationUpdates()
 
         binding.btnBack.setOnClickListener { finish() }
@@ -198,6 +204,17 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
             isListening = false
             handler.postDelayed({ listenForPhotoCommand() }, 1500)
         }
+    }
+
+    private fun initBluetoothSco() {
+        scoStateReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {}
+        }
+        registerReceiver(scoStateReceiver, IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED))
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        @Suppress("DEPRECATION")
+        audioManager.startBluetoothSco()
+        audioManager.isBluetoothScoOn = true
     }
 
     private fun startLocationUpdates() {
@@ -474,6 +491,13 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
         super.onDestroy()
         tts.shutdown()
         speechRecognizer.destroy()
+        try {
+            @Suppress("DEPRECATION")
+            audioManager.stopBluetoothSco()
+            audioManager.isBluetoothScoOn = false
+            audioManager.mode = AudioManager.MODE_NORMAL
+            scoStateReceiver?.let { unregisterReceiver(it) }
+        } catch (e: Exception) { /* ignore */ }
         try {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED
