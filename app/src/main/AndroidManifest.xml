@@ -65,6 +65,11 @@
             android:name=".CustomFormActivity"
             android:exported="false" />
 
+        <!-- Settings -->
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+
         <!-- Glasses Live Stream -->
         <activity
             android:name=".GlassesStreamActivity"

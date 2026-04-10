@@ -92,6 +92,11 @@
             android:name="com.fll.archaeologyform.CustomFormActivity"
             android:exported="false" />
 
+        <!-- Settings -->
+        <activity
+            android:name="com.fll.archaeologyform.SettingsActivity"
+            android:exported="false" />
+
         <!-- Glasses Live Stream -->
         <activity
             android:name="com.fll.archaeologyform.GlassesStreamActivity"

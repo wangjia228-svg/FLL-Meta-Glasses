@@ -73,7 +73,7 @@
 38-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:24:22-94
 39
 40    <application
-40-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:20:5-85:19
+40-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:20:5-90:19
 41        android:name="com.fll.archaeologyform.ArchaeologyApplication"
 41-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:21:9-47
 42        android:allowBackup="true"
@@ -165,124 +165,132 @@
 93            android:exported="false" />
 93-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:66:13-37
 94
-95        <!-- Glasses Live Stream -->
+95        <!-- Settings -->
 96        <activity
-96-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:69:9-72:52
-97            android:name="com.fll.archaeologyform.GlassesStreamActivity"
-97-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:70:13-50
-98            android:exported="false"
+96-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:69:9-71:40
+97            android:name="com.fll.archaeologyform.SettingsActivity"
+97-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:70:13-45
+98            android:exported="false" />
 98-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:71:13-37
-99            android:screenOrientation="portrait" />
-99-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:72:13-49
-100
-101        <!-- FileProvider for phone camera fallback URIs -->
-102        <provider
-103            android:name="androidx.core.content.FileProvider"
-103-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:76:13-62
-104            android:authorities="com.fll.archaeologyform.fileprovider"
-104-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:77:13-64
-105            android:exported="false"
-105-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:78:13-37
-106            android:grantUriPermissions="true" >
-106-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:79:13-47
-107            <meta-data
-107-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:80:13-82:54
-108                android:name="android.support.FILE_PROVIDER_PATHS"
-108-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:81:17-67
-109                android:resource="@xml/file_paths" />
-109-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:82:17-51
-110        </provider>
-111
-112        <service
-112-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:27:9-35:19
-113            android:name="com.meta.wearable.acdc.sdk.service.ACDCRegistrationService"
-113-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:28:13-86
-114            android:exported="true" >
-114-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:29:13-36
-115            <intent-filter>
-115-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:30:13-34:29
-116                <action android:name="com.meta.wearable.acdc.sdk.service.ACDCRegistrationService.BIND" />
-116-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:31:17-106
-116-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:31:25-103
-117
-118                <category android:name="android.intent.category.DEFAULT" />
-118-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:47:17-76
-118-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:47:27-73
-119            </intent-filter>
-120        </service>
-121
-122        <provider
-122-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:37:9-50:20
-123            android:name="androidx.startup.InitializationProvider"
-123-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:38:13-67
-124            android:authorities="com.fll.archaeologyform.androidx-startup"
-124-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:39:13-68
-125            android:exported="false" >
-125-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:40:13-37
-126            <meta-data
-126-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:41:13-43:52
-127                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-127-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:42:17-75
-128                android:value="androidx.startup" />
-128-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:43:17-49
-129            <meta-data
-129-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:44:13-46:52
-130                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-130-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:45:17-78
-131                android:value="androidx.startup" />
-131-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:46:17-49
-132            <meta-data
-132-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:47:13-49:52
-133                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-133-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:48:17-85
-134                android:value="androidx.startup" />
-134-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:49:17-49
-135        </provider>
-136
-137        <receiver
-137-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:52:9-70:20
-138            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-138-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:53:13-76
-139            android:directBootAware="false"
-139-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:54:13-44
-140            android:enabled="true"
-140-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:55:13-35
-141            android:exported="true"
-141-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:56:13-36
-142            android:permission="android.permission.DUMP" >
-142-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:57:13-57
-143            <intent-filter>
-143-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:58:13-60:29
-144                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-144-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:59:17-91
-144-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:59:25-88
-145            </intent-filter>
-146            <intent-filter>
-146-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:61:13-63:29
-147                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-147-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:62:17-85
-147-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:62:25-82
-148            </intent-filter>
-149            <intent-filter>
-149-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:64:13-66:29
-150                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-150-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:65:17-88
-150-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:65:25-85
-151            </intent-filter>
-152            <intent-filter>
-152-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:67:13-69:29
-153                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-153-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:68:17-95
-153-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:68:25-92
-154            </intent-filter>
-155        </receiver>
-156
-157        <meta-data
-157-->[com.facebook.soloader:soloader:0.12.1] C:\Users\evan_\.gradle\caches\transforms-3\a3d1517225f13020fadd1cc798480d54\transformed\jetified-soloader-0.12.1\AndroidManifest.xml:12:9-14:37
-158            android:name="com.facebook.soloader.enabled"
-158-->[com.facebook.soloader:soloader:0.12.1] C:\Users\evan_\.gradle\caches\transforms-3\a3d1517225f13020fadd1cc798480d54\transformed\jetified-soloader-0.12.1\AndroidManifest.xml:13:13-57
-159            android:value="false" />
-159-->[com.facebook.soloader:soloader:0.12.1] C:\Users\evan_\.gradle\caches\transforms-3\a3d1517225f13020fadd1cc798480d54\transformed\jetified-soloader-0.12.1\AndroidManifest.xml:14:13-34
-160    </application>
+99
+100        <!-- Glasses Live Stream -->
+101        <activity
+101-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:74:9-77:52
+102            android:name="com.fll.archaeologyform.GlassesStreamActivity"
+102-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:75:13-50
+103            android:exported="false"
+103-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:76:13-37
+104            android:screenOrientation="portrait" />
+104-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:77:13-49
+105
+106        <!-- FileProvider for phone camera fallback URIs -->
+107        <provider
+108            android:name="androidx.core.content.FileProvider"
+108-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:81:13-62
+109            android:authorities="com.fll.archaeologyform.fileprovider"
+109-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:82:13-64
+110            android:exported="false"
+110-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:83:13-37
+111            android:grantUriPermissions="true" >
+111-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:84:13-47
+112            <meta-data
+112-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:85:13-87:54
+113                android:name="android.support.FILE_PROVIDER_PATHS"
+113-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:86:17-67
+114                android:resource="@xml/file_paths" />
+114-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:87:17-51
+115        </provider>
+116
+117        <service
+117-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:27:9-35:19
+118            android:name="com.meta.wearable.acdc.sdk.service.ACDCRegistrationService"
+118-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:28:13-86
+119            android:exported="true" >
+119-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:29:13-36
+120            <intent-filter>
+120-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:30:13-34:29
+121                <action android:name="com.meta.wearable.acdc.sdk.service.ACDCRegistrationService.BIND" />
+121-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:31:17-106
+121-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:31:25-103
+122
+123                <category android:name="android.intent.category.DEFAULT" />
+123-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:47:17-76
+123-->C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:47:27-73
+124            </intent-filter>
+125        </service>
+126
+127        <provider
+127-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:37:9-50:20
+128            android:name="androidx.startup.InitializationProvider"
+128-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:38:13-67
+129            android:authorities="com.fll.archaeologyform.androidx-startup"
+129-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:39:13-68
+130            android:exported="false" >
+130-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:40:13-37
+131            <meta-data
+131-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:41:13-43:52
+132                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+132-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:42:17-75
+133                android:value="androidx.startup" />
+133-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:43:17-49
+134            <meta-data
+134-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:44:13-46:52
+135                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+135-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:45:17-78
+136                android:value="androidx.startup" />
+136-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:46:17-49
+137            <meta-data
+137-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:47:13-49:52
+138                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+138-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:48:17-85
+139                android:value="androidx.startup" />
+139-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:49:17-49
+140        </provider>
+141
+142        <receiver
+142-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:52:9-70:20
+143            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+143-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:53:13-76
+144            android:directBootAware="false"
+144-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:54:13-44
+145            android:enabled="true"
+145-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:55:13-35
+146            android:exported="true"
+146-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:56:13-36
+147            android:permission="android.permission.DUMP" >
+147-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:57:13-57
+148            <intent-filter>
+148-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:58:13-60:29
+149                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+149-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:59:17-91
+149-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:59:25-88
+150            </intent-filter>
+151            <intent-filter>
+151-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:61:13-63:29
+152                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+152-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:62:17-85
+152-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:62:25-82
+153            </intent-filter>
+154            <intent-filter>
+154-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:64:13-66:29
+155                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+155-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:65:17-88
+155-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:65:25-85
+156            </intent-filter>
+157            <intent-filter>
+157-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:67:13-69:29
+158                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+158-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:68:17-95
+158-->[com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:68:25-92
+159            </intent-filter>
+160        </receiver>
 161
-162</manifest>
+162        <meta-data
+162-->[com.facebook.soloader:soloader:0.12.1] C:\Users\evan_\.gradle\caches\transforms-3\a3d1517225f13020fadd1cc798480d54\transformed\jetified-soloader-0.12.1\AndroidManifest.xml:12:9-14:37
+163            android:name="com.facebook.soloader.enabled"
+163-->[com.facebook.soloader:soloader:0.12.1] C:\Users\evan_\.gradle\caches\transforms-3\a3d1517225f13020fadd1cc798480d54\transformed\jetified-soloader-0.12.1\AndroidManifest.xml:13:13-57
+164            android:value="false" />
+164-->[com.facebook.soloader:soloader:0.12.1] C:\Users\evan_\.gradle\caches\transforms-3\a3d1517225f13020fadd1cc798480d54\transformed\jetified-soloader-0.12.1\AndroidManifest.xml:14:13-34
+165    </application>
+166
+167</manifest>

@@ -128,6 +128,11 @@ class HomeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.btnConnectGlasses.setOnClickListener {
             connectGlasses()
         }
+
+        binding.cardSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
         binding.btnHandsFreeToggle.setOnClickListener {
             handsFreeMode = !handsFreeMode
             updateHandsFreeUI()
@@ -226,8 +231,10 @@ class HomeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun speak(text: String, onComplete: (() -> Unit)? = null) {
         val uid = "utt_${System.currentTimeMillis()}"
+        val phoneAudio = prefs.getBoolean("phone_audio_mode", false)
+        val stream = if (phoneAudio) AudioManager.STREAM_MUSIC else AudioManager.STREAM_VOICE_CALL
         val params = Bundle().apply {
-            putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_VOICE_CALL)
+            putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, stream)
         }
         if (onComplete != null) {
             tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
@@ -240,6 +247,7 @@ class HomeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun initBluetoothSco() {
+        if (prefs.getBoolean("phone_audio_mode", false)) return
         scoStateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {}
         }

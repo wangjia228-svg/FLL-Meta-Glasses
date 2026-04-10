@@ -52,7 +52,11 @@
         "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\xml\\file_paths.xml"
     },
     {
-        "merged": "com.fll.archaeologyform.app-debug-35:/layout_activity_record_detail.xml.flat",
-        "source": "com.fll.archaeologyform.app-main-37:/layout/activity_record_detail.xml"
+        "merged": "com.fll.archaeologyform.app-debug-35:/layout_activity_settings.xml.flat",
+        "source": "com.fll.archaeologyform.app-main-37:/layout/activity_settings.xml"
+    },
+    {
+        "merged": "com.fll.archaeologyform.app-debug-35:/layout_activity_home.xml.flat",
+        "source": "com.fll.archaeologyform.app-main-37:/layout/activity_home.xml"
     }
 ]

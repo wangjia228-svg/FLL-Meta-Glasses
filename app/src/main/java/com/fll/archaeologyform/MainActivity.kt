@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         handsFreeMode = prefs.getBoolean("hands_free_mode", false)
         customFields = loadCustomTemplate()
 
-        if (handsFreeMode) initBluetoothSco()
+        if (handsFreeMode && !prefs.getBoolean("phone_audio_mode", false)) initBluetoothSco()
         startLocationUpdates()
 
         binding.btnBack.setOnClickListener { finish() }
@@ -173,7 +173,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         prefs.edit().putBoolean("hands_free_mode", handsFreeMode).apply()
         applyHandsFreeUI()
         if (handsFreeMode) {
-            initBluetoothSco()
+            if (!prefs.getBoolean("phone_audio_mode", false)) initBluetoothSco()
             speak("Hands-free mode on.")
         } else {
             @Suppress("DEPRECATION")
@@ -887,8 +887,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             return
         }
         val uid = "utt_${System.currentTimeMillis()}"
+        val phoneAudio = prefs.getBoolean("phone_audio_mode", false)
+        val stream = if (phoneAudio) AudioManager.STREAM_MUSIC else AudioManager.STREAM_VOICE_CALL
         val params = Bundle().apply {
-            putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_VOICE_CALL)
+            putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, stream)
         }
         tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {}

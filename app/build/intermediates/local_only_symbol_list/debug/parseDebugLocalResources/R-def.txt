@@ -16,6 +16,7 @@ id btnHandsFreeToggle
 id btnImportCsv
 id btnImportPhoto
 id btnRecord
+id btnResetForm
 id btnRetryListen
 id btnSave
 id btnSaveRecord
@@ -30,6 +31,7 @@ id cardGps
 id cardMetadata
 id cardNotes
 id cardPhoto
+id cardSettings
 id cardViewRecords
 id cardVoiceForm
 id cardVoiceQuestions
@@ -42,6 +44,7 @@ id layoutPreviewQuestions
 id recordsContainer
 id scrollPreview
 id scrollSetup
+id switchPhoneAudio
 id tvConnectLabel
 id tvConnectStatus
 id tvCurrentQuestion
@@ -74,4 +77,5 @@ layout activity_photo_documentation
 layout activity_quick_note
 layout activity_record_detail
 layout activity_records
+layout activity_settings
 xml file_paths
