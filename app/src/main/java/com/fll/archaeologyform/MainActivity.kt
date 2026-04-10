@@ -119,6 +119,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var customFields: List<CustomField>? = null
     private var photoForTemplateQuestion = false
     private var questionsStarted = false
+    private var recordName = ""
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
@@ -143,7 +144,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         startLocationUpdates()
 
         binding.btnBack.setOnClickListener { finish() }
-        binding.btnSaveRecord.setOnClickListener { saveRecord() }
+        binding.btnSaveRecord.setOnClickListener { showNameDialogThenSave() }
         binding.btnRetryListen.setOnClickListener {
             binding.btnRetryListen.visibility = View.GONE
             startListening()
@@ -569,15 +570,25 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         if (fields != null) {
             val field = fields[currentQuestionIndex]
-            val spoken = if (field.description.isNotEmpty()) "${field.label}. ${field.description}" else field.label
+            val typeSpoken = when (field.type) {
+                "short"  -> "Response type: short answer"
+                "long"   -> "Response type: long answer"
+                "number" -> "Response type: number"
+                else     -> null
+            }
+            val spoken = listOfNotNull(
+                field.label,
+                field.description.takeIf { it.isNotEmpty() },
+                typeSpoken
+            ).joinToString(". ")
             binding.tvCurrentQuestion.text = field.label
             val typeDisplay = when (field.type) {
-                "short"  -> "Short answer"
-                "long"   -> "Long answer"
-                "number" -> "Number"
+                "short"  -> "[Response type: Short answer]"
+                "long"   -> "[Response type: Long answer]"
+                "number" -> "[Response type: Number]"
                 else     -> null  // photo: no type label
             }
-            val descParts = listOfNotNull(field.description.takeIf { it.isNotEmpty() }, typeDisplay?.let { "[$it]" })
+            val descParts = listOfNotNull(field.description.takeIf { it.isNotEmpty() }, typeDisplay)
             if (descParts.isNotEmpty()) {
                 binding.tvQuestionDescription.text = descParts.joinToString("  ")
                 binding.tvQuestionDescription.visibility = View.VISIBLE
@@ -662,11 +673,16 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val fields = customFields
         if (fields != null) {
             val field = fields[currentQuestionIndex]
-            if (field.type == "number" && answer.trim().toDoubleOrNull() == null) {
+            val storedAnswer = if (field.type == "number") {
+                answer.trim()
+                    .replace(Regex("^(negative|minus)\\s+", RegexOption.IGNORE_CASE), "-")
+                    .replace("\\s".toRegex(), "")
+            } else answer
+            if (field.type == "number" && storedAnswer.toDoubleOrNull() == null) {
                 speak("Please say a number.") { handler.postDelayed({ startListening() }, 400) }
                 return
             }
-            responses[field.label] = answer
+            responses[field.label] = storedAnswer
         } else {
             val (key, _) = questions[currentQuestionIndex]
             responses[key] = answer
@@ -689,11 +705,57 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.tvStepIndicator.text = "Ready to save"
         binding.btnSaveRecord.visibility = View.VISIBLE
         if (handsFreeMode) {
-            speak("All questions answered. Say save to save, or cancel to discard.") {
-                handler.post { listenForSaveCommand() }
+            speak("All questions answered. What would you like to name this record? Say skip to leave it unnamed.") {
+                handler.post { listenForRecordName() }
             }
         } else {
             speak("Documentation complete. Press Save when ready.")
+        }
+    }
+
+    private fun listenForRecordName() {
+        if (isListening) return
+        isListening = true
+        binding.tvVoiceStatus.text = "Say a name or 'skip'..."
+
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+        }
+
+        speechRecognizer.setRecognitionListener(object : RecognitionListener {
+            override fun onResults(results: Bundle?) {
+                isListening = false
+                val heard = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    ?.firstOrNull()?.trim() ?: ""
+                recordName = if (heard.lowercase() == "skip" || heard.isEmpty()) "" else heard
+                val confirmation = if (recordName.isEmpty()) "No name. Say save to save, or cancel to discard."
+                    else "Name set to $recordName. Say save to save, or cancel to discard."
+                speak(confirmation) { handler.postDelayed({ listenForSaveCommand() }, 300) }
+            }
+            override fun onError(error: Int) {
+                isListening = false
+                recordName = ""
+                speak("Say save to save, or cancel to discard.") {
+                    handler.postDelayed({ listenForSaveCommand() }, 300)
+                }
+            }
+            override fun onReadyForSpeech(params: Bundle?) {}
+            override fun onBeginningOfSpeech() {}
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() { binding.tvVoiceStatus.text = "Processing..." }
+            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+        })
+
+        try {
+            speechRecognizer.startListening(intent)
+        } catch (e: Exception) {
+            isListening = false
+            recordName = ""
+            handler.postDelayed({ listenForSaveCommand() }, 1500)
         }
     }
 
@@ -753,6 +815,26 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    private fun showNameDialogThenSave() {
+        val editText = android.widget.EditText(this).apply {
+            hint = "Enter a name (optional)"
+            setPadding(48, 24, 48, 24)
+        }
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Name this record")
+            .setMessage("Leave blank to save without a name.")
+            .setView(editText)
+            .setPositiveButton("Save") { _, _ ->
+                recordName = editText.text.toString().trim()
+                saveRecord()
+            }
+            .setNegativeButton("Skip") { _, _ ->
+                recordName = ""
+                saveRecord()
+            }
+            .show()
+    }
+
     private fun saveRecord() {
         val datetime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
         val dir = File(filesDir, "records")
@@ -761,28 +843,34 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(Date())
         }
 
+        val nameSanitized = recordName
+            .replace(Regex("[^a-zA-Z0-9 _\\-]"), "").replace(' ', '_').take(30)
+        val fileName = if (nameSanitized.isNotEmpty()) "${nameSanitized}_$ts" else "record_$ts"
+
         val fields = customFields
         if (fields != null) {
             fun esc(v: String) = if (v.contains(',') || v.contains('"') || v.contains('\n'))
                 "\"${v.replace("\"", "\"\"")}\"" else v
-            val headers = (listOf("datetime", "latitude", "longitude") + fields.map { it.label })
+            val headers = (listOf("name", "datetime", "latitude", "longitude") + fields.map { it.label })
                 .joinToString(",") { esc(it) }
             val values = (listOf(
+                recordName,
                 datetime,
                 currentLocation?.latitude?.toString() ?: "",
                 currentLocation?.longitude?.toString() ?: ""
             ) + fields.map { responses[it.label] ?: "" }).joinToString(",") { esc(it) }
-            File(dir, "record_$ts.csv").writeText("$headers\n$values\n")
+            File(dir, "$fileName.csv").writeText("$headers\n$values\n")
         } else {
             val json = JSONObject().apply {
                 put("type", "field_record")
+                put("name", recordName)
                 put("datetime", datetime)
                 put("photo_file", photoFile?.absolutePath ?: "")
                 put("latitude", currentLocation?.latitude?.toString() ?: "")
                 put("longitude", currentLocation?.longitude?.toString() ?: "")
                 responses.forEach { (k, v) -> put(k, v) }
             }
-            File(dir, "record_$ts.json").writeText(json.toString(2))
+            File(dir, "$fileName.json").writeText(json.toString(2))
         }
 
         if (!handsFreeMode) {

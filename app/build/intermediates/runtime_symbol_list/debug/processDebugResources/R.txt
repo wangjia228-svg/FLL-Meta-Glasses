@@ -3182,6 +3182,7 @@ int id btnConfirmTemplate 0x7f080237
 int id btnConnect 0x7f080216
 int id btnConnectGlasses 0x7f080064
 int id btnDownloadTemplate 0x7f080217
+int id btnExport 0x7f08023c
 int id btnHandsFreeToggle 0x7f080065
 int id btnImportCsv 0x7f080218
 int id btnImportPhoto 0x7f080066

@@ -60,48 +60,37 @@ class RecordsActivity : AppCompatActivity() {
         if (file.extension == "json") {
             val json = JSONObject(file.readText())
             val type = json.optString("type", "form")
+            val name = json.optString("name").takeIf { it.isNotEmpty() }
+            val datetime = json.optString("datetime", "Unknown date")
 
             val typeLabel = when (type) {
                 "photo_documentation" -> "  Photo Documentation"
                 "custom_form" -> "  Custom Form"
                 else -> "  Voice Form"
             }
-            addLabel(content, typeLabel, 12f, "#999999")
-            addLabel(content, json.optString("datetime", "Unknown date"), 15f, "#222222")
-
-            if (type == "custom_form") {
-                val firstAnswer = json.optJSONArray("questions")
-                    ?.optJSONObject(0)?.optString("answer") ?: ""
-                firstAnswer.takeIf { it.isNotEmpty() }
-                    ?.let { addLabel(content, it, 14f, "#333333") }
-            } else {
-                json.optString("artifact").takeIf { it.isNotEmpty() }
-                    ?.let { addLabel(content, it, 14f, "#333333") }
-            }
-            addLabel(content, json.optString("datetime", "Unknown date"), 12f, "#666666")
+            addLabel(content, typeLabel, 12f, "#666666")
+            addLabel(content, name ?: datetime, 16f, "#888888")
+            if (name != null) addLabel(content, datetime, 13f, "#222222")
 
             val lat = json.optString("latitude").toDoubleOrNull()
             val lon = json.optString("longitude").toDoubleOrNull()
             if (lat != null && lon != null) {
-                addLabel(content, "GPS: ${"%.2f".format(lat)}, ${"%.2f".format(lon)}", 12f, "#666666")
+                addLabel(content, "GPS: ${"%.2f".format(lat)}, ${"%.2f".format(lon)}", 11f, "#999999")
             }
         } else if (file.extension == "csv") {
             val lines = file.readLines().filter { it.isNotBlank() }
             val headers = lines.getOrNull(0)?.split(",")?.map { it.trim('"') } ?: emptyList()
             val values = lines.getOrNull(1)?.split(",")?.map { it.trim('"') } ?: emptyList()
-            val datetime = values.getOrNull(headers.indexOf("datetime"))?.takeIf { it.isNotEmpty() }
-            val lat = values.getOrNull(headers.indexOf("latitude"))?.toDoubleOrNull()
-            val lon = values.getOrNull(headers.indexOf("longitude"))?.toDoubleOrNull()
-            addLabel(content, "  Custom Form", 12f, "#999999")
-            addLabel(content, datetime ?: file.nameWithoutExtension, 15f, "#222222")
-            // Show first non-metadata answer as preview
-            val firstAnswerIdx = headers.indexOfFirst { it != "datetime" && it != "latitude" && it != "longitude" }
-            if (firstAnswerIdx >= 0) {
-                val preview = values.getOrNull(firstAnswerIdx)?.takeIf { it.isNotEmpty() }
-                preview?.let { addLabel(content, it, 14f, "#333333") }
-            }
+            fun col(key: String) = values.getOrNull(headers.indexOf(key))?.takeIf { it.isNotEmpty() }
+            val name = col("name")
+            val datetime = col("datetime")
+            val lat = col("latitude")?.toDoubleOrNull()
+            val lon = col("longitude")?.toDoubleOrNull()
+            addLabel(content, "  Custom Form", 12f, "#666666")
+            addLabel(content, name ?: datetime ?: file.nameWithoutExtension, 16f, "#888888")
+            if (name != null && datetime != null) addLabel(content, datetime, 13f, "#222222")
             if (lat != null && lon != null) {
-                addLabel(content, "GPS: ${"%.2f".format(lat)}, ${"%.2f".format(lon)}", 12f, "#666666")
+                addLabel(content, "GPS: ${"%.2f".format(lat)}, ${"%.2f".format(lon)}", 11f, "#999999")
             }
         } else {
             addLabel(content, "  Quick Note", 12f, "#999999")

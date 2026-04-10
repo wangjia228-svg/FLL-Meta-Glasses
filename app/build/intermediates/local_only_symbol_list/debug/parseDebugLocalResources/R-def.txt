@@ -11,6 +11,7 @@ id btnConfirmTemplate
 id btnConnect
 id btnConnectGlasses
 id btnDownloadTemplate
+id btnExport
 id btnHandsFreeToggle
 id btnImportCsv
 id btnImportPhoto
