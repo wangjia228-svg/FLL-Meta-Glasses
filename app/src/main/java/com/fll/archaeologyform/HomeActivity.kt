@@ -122,6 +122,9 @@ class HomeActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.cardCustomForm.setOnClickListener {
             startActivity(Intent(this, CustomFormActivity::class.java))
         }
+        binding.cardGlassesStream.setOnClickListener {
+            startActivity(Intent(this, GlassesStreamActivity::class.java))
+        }
         binding.btnConnectGlasses.setOnClickListener {
             connectGlasses()
         }

@@ -2978,6 +2978,7 @@ int drawable btn_radio_on_to_off_mtrl_animation 0x7f070080
 int drawable circle_bg_blue 0x7f070081
 int drawable circle_bg_green 0x7f0700e5
 int drawable circle_bg_navy 0x7f070082
+int drawable circle_bg_purple 0x7f0700e6
 int drawable design_fab_background 0x7f070083
 int drawable design_ic_visibility 0x7f070084
 int drawable design_ic_visibility_off 0x7f070085
@@ -3175,8 +3176,9 @@ int id bounceBoth 0x7f08005f
 int id bounceEnd 0x7f080060
 int id bounceStart 0x7f080061
 int id btnBack 0x7f080062
-int id btnChangeCsv 0x7f080215
+int id btnBackToUpload 0x7f080236
 int id btnClear 0x7f080063
+int id btnConfirmTemplate 0x7f080237
 int id btnConnect 0x7f080216
 int id btnConnectGlasses 0x7f080064
 int id btnDownloadTemplate 0x7f080217
@@ -3187,6 +3189,8 @@ int id btnRecord 0x7f080067
 int id btnRetryListen 0x7f080068
 int id btnSave 0x7f080069
 int id btnSaveRecord 0x7f08006a
+int id btnStartStream 0x7f080226
+int id btnStopStream 0x7f080227
 int id btnTakePhoto 0x7f08006b
 int id buttonPanel 0x7f08006c
 int id cache_measures 0x7f08006d
@@ -3195,6 +3199,7 @@ int id cancel_button 0x7f08006f
 int id cardConnect 0x7f080219
 int id cardCustomForm 0x7f08021a
 int id cardFieldNotes 0x7f080070
+int id cardGlassesStream 0x7f080228
 int id cardGps 0x7f08021b
 int id cardMetadata 0x7f080071
 int id cardNotes 0x7f080072
@@ -3330,13 +3335,14 @@ int id italic 0x7f0800f3
 int id item_touch_helper_previous_elevation 0x7f0800f4
 int id ivDetailPhoto 0x7f08021c
 int id ivPhoto 0x7f0800f5
+int id ivStream 0x7f080229
 int id jumpToEnd 0x7f0800f6
 int id jumpToStart 0x7f0800f7
 int id labeled 0x7f0800f8
 int id layout 0x7f0800f9
 int id layoutFields 0x7f08021d
 int id layoutMetadata 0x7f0800fa
-int id layoutQuestions 0x7f08021e
+int id layoutPreviewQuestions 0x7f080238
 int id left 0x7f0800fb
 int id leftToRight 0x7f0800fc
 int id legacy 0x7f0800fd
@@ -3478,9 +3484,9 @@ int id sawtooth 0x7f080184
 int id scale 0x7f080185
 int id screen 0x7f080186
 int id scroll 0x7f080187
-int id scrollForm 0x7f08021f
 int id scrollIndicatorDown 0x7f080188
 int id scrollIndicatorUp 0x7f080189
+int id scrollPreview 0x7f080239
 int id scrollSetup 0x7f080220
 int id scrollView 0x7f08018a
 int id scrollable 0x7f08018b
@@ -3588,7 +3594,7 @@ int id tvDateTime 0x7f0801ee
 int id tvDetailDate 0x7f080223
 int id tvDetailGps 0x7f080224
 int id tvFieldNotes 0x7f0801ef
-int id tvFormTitle 0x7f080225
+int id tvFrameCount 0x7f08022a
 int id tvGlassesIcon 0x7f0801f0
 int id tvGlassesStatus 0x7f0801f1
 int id tvHandsFreeBar 0x7f0801f2
@@ -3597,9 +3603,12 @@ int id tvNoRecords 0x7f0801f4
 int id tvNotes 0x7f0801f5
 int id tvPhotoStatus 0x7f0801f6
 int id tvPhotoStepLabel 0x7f0801f7
+int id tvPreviewCount 0x7f08023a
 int id tvProgressText 0x7f0801f8
+int id tvQuestionDescription 0x7f08023b
 int id tvStatus 0x7f0801f9
 int id tvStepIndicator 0x7f0801fa
+int id tvStreamStatus 0x7f08022b
 int id tvVoiceQuestionsLabel 0x7f0801fb
 int id tvVoiceStatus 0x7f0801fc
 int id unchecked 0x7f0801fd
@@ -3741,6 +3750,7 @@ int layout abc_search_view 0x7f0b0019
 int layout abc_select_dialog_material 0x7f0b001a
 int layout abc_tooltip 0x7f0b001b
 int layout activity_custom_form 0x7f0b0070
+int layout activity_glasses_stream 0x7f0b0072
 int layout activity_home 0x7f0b001c
 int layout activity_main 0x7f0b001d
 int layout activity_photo_documentation 0x7f0b001e

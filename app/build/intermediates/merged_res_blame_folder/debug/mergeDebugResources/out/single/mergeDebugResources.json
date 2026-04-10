@@ -8,12 +8,20 @@
         "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_photo_documentation.xml"
     },
     {
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\drawable_circle_bg_purple.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\drawable\\circle_bg_purple.xml"
+    },
+    {
         "merged": "com.fll.archaeologyform.app-debug-35:/layout_activity_main.xml.flat",
         "source": "com.fll.archaeologyform.app-main-37:/layout/activity_main.xml"
     },
     {
         "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\drawable_circle_bg_navy.xml.flat",
         "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\drawable\\circle_bg_navy.xml"
+    },
+    {
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\layout_activity_record_detail.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_record_detail.xml"
     },
     {
         "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\layout_activity_home.xml.flat",
@@ -24,20 +32,20 @@
         "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_quick_note.xml"
     },
     {
-        "merged": "com.fll.archaeologyform.app-debug-35:/drawable_circle_bg_green.xml.flat",
-        "source": "com.fll.archaeologyform.app-main-37:/drawable/circle_bg_green.xml"
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\layout_activity_glasses_stream.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_glasses_stream.xml"
     },
     {
-        "merged": "com.fll.archaeologyform.app-debug-35:/xml_file_paths.xml.flat",
-        "source": "com.fll.archaeologyform.app-main-37:/xml/file_paths.xml"
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\drawable_circle_bg_green.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\drawable\\circle_bg_green.xml"
     },
     {
         "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\layout_activity_records.xml.flat",
         "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_records.xml"
     },
     {
-        "merged": "com.fll.archaeologyform.app-debug-35:/layout_activity_custom_form.xml.flat",
-        "source": "com.fll.archaeologyform.app-main-37:/layout/activity_custom_form.xml"
+        "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\layout_activity_custom_form.xml.flat",
+        "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_custom_form.xml"
     },
     {
         "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\drawable_circle_bg_blue.xml.flat",
@@ -46,13 +54,5 @@
     {
         "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-debug-35:\\xml_file_paths.xml.flat",
         "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\xml\\file_paths.xml"
-    },
-    {
-        "merged": "com.fll.archaeologyform.app-debug-35:/layout_activity_home.xml.flat",
-        "source": "com.fll.archaeologyform.app-main-37:/layout/activity_home.xml"
-    },
-    {
-        "merged": "com.fll.archaeologyform.app-debug-35:/layout_activity_record_detail.xml.flat",
-        "source": "com.fll.archaeologyform.app-main-37:/layout/activity_record_detail.xml"
     }
 ]

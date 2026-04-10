@@ -115,6 +115,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         Pair("notes",     "Any additional notes or observations?")
     )
 
+    private data class CustomField(val label: String, val description: String, val type: String)
+    private var customFields: List<CustomField>? = null
+    private var photoForTemplateQuestion = false
+    private var questionsStarted = false
+
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
             currentLocation = location
@@ -132,6 +137,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         handsFreeMode = prefs.getBoolean("hands_free_mode", false)
+        customFields = loadCustomTemplate()
 
         if (handsFreeMode) initBluetoothSco()
         startLocationUpdates()
@@ -150,7 +156,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             Wearables.startRegistration(this)
         }
 
-        observeRegistrationState()
+        val noPhotoTemplate = customFields != null && customFields!!.none { it.type == "photo" }
+        if (noPhotoTemplate) {
+            // Custom template with no photo questions: hide glasses UI, start when TTS ready
+            binding.tvConnectLabel.visibility = View.GONE
+            binding.cardConnect.visibility = View.GONE
+        } else {
+            observeRegistrationState()
+        }
         applyHandsFreeUI()
     }
 
@@ -184,6 +197,17 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    private fun loadCustomTemplate(): List<CustomField>? {
+        val json = prefs.getString("custom_template_json", null) ?: return null
+        return try {
+            val arr = org.json.JSONArray(json)
+            (0 until arr.length()).map { i ->
+                val obj = arr.getJSONObject(i)
+                CustomField(obj.getString("label"), obj.optString("description"), obj.getString("type"))
+            }.takeIf { it.isNotEmpty() }
+        } catch (e: Exception) { null }
+    }
+
     private fun observeRegistrationState() {
         lifecycleScope.launch {
             Wearables.registrationState.collect { state ->
@@ -193,7 +217,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                             isRegistered = true
                             binding.tvConnectLabel.visibility = View.GONE
                             binding.cardConnect.visibility = View.GONE
-                            setupCameraPermission()
+                            val hasPhotoQ = customFields?.any { it.type == "photo" } == true
+                            if (customFields != null && !hasPhotoQ) {
+                                // Custom template with no photos — skip camera entirely
+                                startQuestionsFlow()
+                            } else {
+                                // Default flow, or custom template that has photo questions
+                                setupCameraPermission()
+                            }
                         }
                     }
                     else -> {
@@ -282,6 +313,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun showPhotoStep() {
+        if (customFields != null) {
+            // Template mode: go straight to questions; stream starts lazily per photo question
+            startQuestionsFlow()
+            return
+        }
         binding.tvPhotoStepLabel.visibility = View.VISIBLE
         binding.tvPhotoStatus.visibility = View.VISIBLE
         binding.btnTakePhoto.text = "Take Photo via Glasses Camera"
@@ -308,18 +344,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 session.videoStream.collect { }
             }
 
-            // Enable button after brief warmup as fallback
+            // Enable button after brief warmup (default mode only)
             handler.postDelayed({
-                if (streamSession != null && !photoTaken) {
+                if (streamSession != null && !photoTaken && customFields == null) {
                     binding.btnTakePhoto.isEnabled = true
                     binding.tvPhotoStatus.text = "Camera ready"
                 }
             }, 2500)
 
-            // Monitor state for immediate readiness
+            // Monitor state for immediate readiness (default mode only)
             streamStateJob = lifecycleScope.launch {
                 session.state.collect { state ->
-                    if (state == StreamSessionState.STREAMING) {
+                    if (state == StreamSessionState.STREAMING && customFields == null) {
                         binding.tvPhotoStatus.text = "Camera ready"
                         binding.btnTakePhoto.isEnabled = true
                     }
@@ -328,6 +364,38 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         } catch (e: Exception) {
             Log.e("MARP", "Stream error", e)
             binding.tvPhotoStatus.text = "Camera connection failed"
+        }
+    }
+
+    private fun startStreamForTemplatePhoto() {
+        binding.tvPhotoStatus.text = "Starting camera..."
+        binding.btnTakePhoto.isEnabled = false
+        try {
+            val session = Wearables.startStreamSession(
+                this, AutoDeviceSelector(), StreamConfiguration(VideoQuality.MEDIUM, 24)
+            )
+            streamSession = session
+            videoStreamJob = lifecycleScope.launch(Dispatchers.Default) {
+                session.videoStream.collect { }
+            }
+            handler.postDelayed({
+                if (streamSession != null) {
+                    binding.btnTakePhoto.isEnabled = true
+                    binding.tvPhotoStatus.text = "Camera ready — tap to capture"
+                }
+            }, 2500)
+            streamStateJob = lifecycleScope.launch {
+                session.state.collect { state ->
+                    if (state == StreamSessionState.STREAMING) {
+                        binding.tvPhotoStatus.text = "Camera ready — tap to capture"
+                        binding.btnTakePhoto.isEnabled = true
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("MARP", "Stream error", e)
+            binding.tvPhotoStatus.text = "Camera failed"
+            binding.btnTakePhoto.isEnabled = true
         }
     }
 
@@ -386,9 +454,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun onPhotoTaken() {
-        photoTaken = true
         photoInProgress = false
-        binding.tvPhotoStatus.text = "Photo captured"
         binding.btnTakePhoto.visibility = View.GONE
 
         val display = SimpleDateFormat("MMM d, yyyy  h:mm a", Locale.getDefault()).format(Date())
@@ -396,6 +462,27 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         updateLocationDisplay()
         binding.layoutMetadata.visibility = View.VISIBLE
 
+        if (photoForTemplateQuestion) {
+            // Photo captured for a template question — record, close stream, advance
+            photoForTemplateQuestion = false
+            streamStateJob?.cancel(); streamStateJob = null
+            videoStreamJob?.cancel(); videoStreamJob = null
+            try { streamSession?.close() } catch (_: Exception) { }
+            streamSession = null
+            val fields = customFields ?: return
+            responses[fields[currentQuestionIndex].label] = photoFile?.absolutePath ?: ""
+            binding.cardFieldNotes.visibility = View.VISIBLE
+            binding.tvFieldNotes.text = responses.entries.joinToString("\n\n") {
+                "${it.key.uppercase()}:\n  ${it.value}"
+            }
+            currentQuestionIndex++
+            speak("Photo captured.") { handler.postDelayed({ askNextQuestion() }, 300) }
+            return
+        }
+
+        // Default flow: initial photo taken, start voice questions
+        photoTaken = true
+        binding.tvPhotoStatus.text = "Photo captured"
         if (handsFreeMode) {
             speak("Photo captured. Starting field documentation.") {
                 handler.postDelayed({ startQuestionsFlow() }, 400)
@@ -452,6 +539,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun startQuestionsFlow() {
+        if (questionsStarted) return
+        questionsStarted = true
         binding.tvVoiceQuestionsLabel.visibility = View.VISIBLE
         binding.cardVoiceQuestions.visibility = View.VISIBLE
         binding.tvStepIndicator.text = "Voice questions"
@@ -467,19 +556,55 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun askNextQuestion() {
-        if (currentQuestionIndex >= questions.size) {
+        val fields = customFields
+        val total = fields?.size ?: questions.size
+        if (currentQuestionIndex >= total) {
             onVoiceComplete()
             return
         }
-        val (_, questionText) = questions[currentQuestionIndex]
         val num = currentQuestionIndex + 1
-        binding.tvCurrentQuestion.text = questionText
-        binding.tvProgressText.text = "Question $num of ${questions.size}"
+        binding.tvProgressText.text = "Question $num of $total"
         binding.tvVoiceStatus.text = "Speaking..."
         binding.btnRetryListen.visibility = View.GONE
 
-        speak(questionText) {
-            handler.postDelayed({ startListening() }, 400)
+        if (fields != null) {
+            val field = fields[currentQuestionIndex]
+            val spoken = if (field.description.isNotEmpty()) "${field.label}. ${field.description}" else field.label
+            binding.tvCurrentQuestion.text = field.label
+            val typeDisplay = when (field.type) {
+                "short"  -> "Short answer"
+                "long"   -> "Long answer"
+                "number" -> "Number"
+                else     -> null  // photo: no type label
+            }
+            val descParts = listOfNotNull(field.description.takeIf { it.isNotEmpty() }, typeDisplay?.let { "[$it]" })
+            if (descParts.isNotEmpty()) {
+                binding.tvQuestionDescription.text = descParts.joinToString("  ")
+                binding.tvQuestionDescription.visibility = View.VISIBLE
+            } else {
+                binding.tvQuestionDescription.visibility = View.GONE
+            }
+
+            when (field.type) {
+                "photo" -> speak(spoken) {
+                    handler.post {
+                        photoForTemplateQuestion = true
+                        binding.tvPhotoStepLabel.visibility = View.VISIBLE
+                        binding.tvPhotoStatus.visibility = View.VISIBLE
+                        binding.btnTakePhoto.text = "Take Photo"
+                        binding.btnTakePhoto.visibility = View.VISIBLE
+                        binding.btnTakePhoto.isEnabled = false
+                        startStreamForTemplatePhoto()
+                        if (handsFreeMode) handler.postDelayed({ listenForPhotoCommand() }, 300)
+                    }
+                }
+                else -> speak(spoken) { handler.postDelayed({ startListening() }, 400) }
+            }
+        } else {
+            val (_, questionText) = questions[currentQuestionIndex]
+            binding.tvCurrentQuestion.text = questionText
+            binding.tvQuestionDescription.visibility = View.GONE
+            speak(questionText) { handler.postDelayed({ startListening() }, 400) }
         }
     }
 
@@ -534,8 +659,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun handleAnswer(answer: String) {
-        val (field, _) = questions[currentQuestionIndex]
-        responses[field] = answer
+        val fields = customFields
+        if (fields != null) {
+            val field = fields[currentQuestionIndex]
+            if (field.type == "number" && answer.trim().toDoubleOrNull() == null) {
+                speak("Please say a number.") { handler.postDelayed({ startListening() }, 400) }
+                return
+            }
+            responses[field.label] = answer
+        } else {
+            val (key, _) = questions[currentQuestionIndex]
+            responses[key] = answer
+        }
 
         binding.cardFieldNotes.visibility = View.VISIBLE
         binding.tvFieldNotes.text = responses.entries.joinToString("\n\n") {
@@ -543,13 +678,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
 
         currentQuestionIndex++
-        speak("Got it.") {
-            handler.postDelayed({ askNextQuestion() }, 300)
-        }
+        speak("Got it.") { handler.postDelayed({ askNextQuestion() }, 300) }
     }
 
     private fun onVoiceComplete() {
         binding.tvCurrentQuestion.text = "All questions answered."
+        binding.tvQuestionDescription.visibility = View.GONE
         binding.tvVoiceStatus.text = "Complete"
         binding.tvProgressText.text = "Done"
         binding.tvStepIndicator.text = "Ready to save"
@@ -621,21 +755,35 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun saveRecord() {
         val datetime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-        val json = JSONObject().apply {
-            put("type", "field_record")
-            put("datetime", datetime)
-            put("photo_file", photoFile?.absolutePath ?: "")
-            put("latitude", currentLocation?.latitude?.toString() ?: "")
-            put("longitude", currentLocation?.longitude?.toString() ?: "")
-            responses.forEach { (k, v) -> put(k, v) }
-        }
-
         val dir = File(filesDir, "records")
         if (!dir.exists()) dir.mkdirs()
         val ts = recordTimestamp.ifEmpty {
             SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(Date())
         }
-        File(dir, "record_$ts.json").writeText(json.toString(2))
+
+        val fields = customFields
+        if (fields != null) {
+            fun esc(v: String) = if (v.contains(',') || v.contains('"') || v.contains('\n'))
+                "\"${v.replace("\"", "\"\"")}\"" else v
+            val headers = (listOf("datetime", "latitude", "longitude") + fields.map { it.label })
+                .joinToString(",") { esc(it) }
+            val values = (listOf(
+                datetime,
+                currentLocation?.latitude?.toString() ?: "",
+                currentLocation?.longitude?.toString() ?: ""
+            ) + fields.map { responses[it.label] ?: "" }).joinToString(",") { esc(it) }
+            File(dir, "record_$ts.csv").writeText("$headers\n$values\n")
+        } else {
+            val json = JSONObject().apply {
+                put("type", "field_record")
+                put("datetime", datetime)
+                put("photo_file", photoFile?.absolutePath ?: "")
+                put("latitude", currentLocation?.latitude?.toString() ?: "")
+                put("longitude", currentLocation?.longitude?.toString() ?: "")
+                responses.forEach { (k, v) -> put(k, v) }
+            }
+            File(dir, "record_$ts.json").writeText(json.toString(2))
+        }
 
         if (!handsFreeMode) {
             Toast.makeText(this, "Field record saved!", Toast.LENGTH_SHORT).show()
@@ -645,7 +793,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun speak(text: String, onComplete: (() -> Unit)? = null) {
-        if (!handsFreeMode) {
+        // Always use TTS for custom template; otherwise only in hands-free mode
+        if (!handsFreeMode && customFields == null) {
             onComplete?.invoke()
             return
         }
@@ -671,10 +820,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             tts.language = Locale.US
             tts.setSpeechRate(1.1f)
             ttsReady = true
-            if (handsFreeMode && isRegistered) {
-                handler.removeCallbacks(listenForPhotoRunnable)
-                speak("Say take photo to begin.") {
-                    handler.postDelayed(listenForPhotoRunnable, 300)
+            val noPhotoTemplate = customFields != null && customFields!!.none { it.type == "photo" }
+            when {
+                noPhotoTemplate -> handler.postDelayed({ startQuestionsFlow() }, 300)
+                handsFreeMode && isRegistered -> {
+                    handler.removeCallbacks(listenForPhotoRunnable)
+                    speak("Say take photo to begin.") {
+                        handler.postDelayed(listenForPhotoRunnable, 300)
+                    }
                 }
             }
         }

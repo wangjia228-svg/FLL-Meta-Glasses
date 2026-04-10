@@ -28,6 +28,11 @@ class RecordDetailActivity : AppCompatActivity() {
     }
 
     private fun loadRecord(file: File) {
+        if (file.extension == "csv") {
+            loadCsvRecord(file)
+            return
+        }
+
         val json = JSONObject(file.readText())
 
         // Header date
@@ -78,6 +83,29 @@ class RecordDetailActivity : AppCompatActivity() {
                 val value = json.optString(key)
                 if (value.isNotEmpty()) addField(label, value)
             }
+        }
+    }
+
+    private fun loadCsvRecord(file: File) {
+        val lines = file.readLines().filter { it.isNotBlank() }
+        val headers = lines.getOrNull(0)?.split(",")?.map { it.trim('"') } ?: return
+        val values = lines.getOrNull(1)?.split(",")?.map { it.trim('"') } ?: return
+
+        fun value(key: String) = values.getOrNull(headers.indexOf(key))?.takeIf { it.isNotEmpty() }
+
+        binding.tvDetailDate.text = value("datetime") ?: file.nameWithoutExtension
+
+        val lat = value("latitude")
+        val lon = value("longitude")
+        if (lat != null && lon != null) {
+            binding.tvDetailGps.text = "$lat,  $lon"
+            binding.cardGps.visibility = View.VISIBLE
+        }
+
+        for ((i, header) in headers.withIndex()) {
+            if (header == "datetime" || header == "latitude" || header == "longitude") continue
+            val answer = values.getOrNull(i) ?: ""
+            if (answer.isNotEmpty()) addField(header, answer)
         }
     }
 

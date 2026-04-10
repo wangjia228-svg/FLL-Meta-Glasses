@@ -93,6 +93,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final TextView tvProgressText;
 
   @NonNull
+  public final TextView tvQuestionDescription;
+
+  @NonNull
   public final TextView tvStepIndicator;
 
   @NonNull
@@ -111,8 +114,9 @@ public final class ActivityMainBinding implements ViewBinding {
       @NonNull TextView tvDateTime, @NonNull TextView tvFieldNotes,
       @NonNull TextView tvHandsFreeBar, @NonNull TextView tvLocation,
       @NonNull TextView tvPhotoStatus, @NonNull TextView tvPhotoStepLabel,
-      @NonNull TextView tvProgressText, @NonNull TextView tvStepIndicator,
-      @NonNull TextView tvVoiceQuestionsLabel, @NonNull TextView tvVoiceStatus) {
+      @NonNull TextView tvProgressText, @NonNull TextView tvQuestionDescription,
+      @NonNull TextView tvStepIndicator, @NonNull TextView tvVoiceQuestionsLabel,
+      @NonNull TextView tvVoiceStatus) {
     this.rootView = rootView;
     this.btnBack = btnBack;
     this.btnConnect = btnConnect;
@@ -137,6 +141,7 @@ public final class ActivityMainBinding implements ViewBinding {
     this.tvPhotoStatus = tvPhotoStatus;
     this.tvPhotoStepLabel = tvPhotoStepLabel;
     this.tvProgressText = tvProgressText;
+    this.tvQuestionDescription = tvQuestionDescription;
     this.tvStepIndicator = tvStepIndicator;
     this.tvVoiceQuestionsLabel = tvVoiceQuestionsLabel;
     this.tvVoiceStatus = tvVoiceStatus;
@@ -307,6 +312,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tvQuestionDescription;
+      TextView tvQuestionDescription = ViewBindings.findChildViewById(rootView, id);
+      if (tvQuestionDescription == null) {
+        break missingId;
+      }
+
       id = R.id.tvStepIndicator;
       TextView tvStepIndicator = ViewBindings.findChildViewById(rootView, id);
       if (tvStepIndicator == null) {
@@ -330,7 +341,7 @@ public final class ActivityMainBinding implements ViewBinding {
           cardConnect, cardFieldNotes, cardPhoto, cardVoiceQuestions, ivPhoto, layoutMetadata,
           tvConnectLabel, tvConnectStatus, tvCurrentQuestion, tvDateTime, tvFieldNotes,
           tvHandsFreeBar, tvLocation, tvPhotoStatus, tvPhotoStepLabel, tvProgressText,
-          tvStepIndicator, tvVoiceQuestionsLabel, tvVoiceStatus);
+          tvQuestionDescription, tvStepIndicator, tvVoiceQuestionsLabel, tvVoiceStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

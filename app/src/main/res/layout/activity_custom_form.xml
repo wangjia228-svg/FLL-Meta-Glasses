@@ -38,7 +38,7 @@
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
-    <!-- Setup section (CSV import) -->
+    <!-- ── Setup section ─────────────────────────────────────────────────── -->
     <ScrollView
         android:id="@+id/scrollSetup"
         android:layout_width="match_parent"
@@ -54,7 +54,6 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="14dp"
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="#FFFFFF">
@@ -77,10 +76,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Upload a CSV file to define your form questions. Each row should have a question label and a field key."
+                        android:text="Download the template, fill in your questions, then upload it. After confirming, New Field Record will use your questions."
                         android:textSize="14sp"
                         android:textColor="#555555"
-                        android:layout_marginBottom="16dp" />
+                        android:layout_marginBottom="20dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -89,18 +88,66 @@
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:textColor="#333333"
-                        android:layout_marginBottom="4dp" />
+                        android:layout_marginBottom="8dp" />
 
-                    <TextView
+                    <!-- Format table -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="question_label,question_key\nArtifact Type,artifact_type\nDepth (cm),depth_cm\nCondition,condition"
-                        android:textSize="12sp"
-                        android:textColor="#1B2A4A"
-                        android:fontFamily="monospace"
+                        android:orientation="vertical"
                         android:background="#EEF1F8"
-                        android:padding="12dp"
-                        android:layout_marginBottom="24dp" />
+                        android:padding="8dp"
+                        android:layout_marginBottom="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="#D0D8EC"
+                            android:padding="6dp">
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8"
+                                android:text="" android:textSize="11sp" android:textStyle="bold" android:textColor="#1B2A4A" />
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                                android:text="Question Label" android:textSize="11sp" android:textStyle="bold" android:textColor="#1B2A4A" />
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1.2"
+                                android:text="Description" android:textSize="11sp" android:textStyle="bold" android:textColor="#1B2A4A" />
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8"
+                                android:text="Type" android:textSize="11sp" android:textStyle="bold" android:textColor="#1B2A4A" />
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:orientation="horizontal" android:padding="6dp" android:background="#FFFFFF">
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8"
+                                android:text="Question #1" android:textSize="11sp" android:textColor="#888888" />
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                                android:text="" android:textSize="11sp" />
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1.2"
+                                android:text="" android:textSize="11sp" />
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8"
+                                android:text="" android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:orientation="horizontal" android:padding="6dp" android:background="#F7F9FC">
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8"
+                                android:text="Question #2" android:textSize="11sp" android:textColor="#888888" />
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                                android:text="" android:textSize="11sp" />
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1.2"
+                                android:text="" android:textSize="11sp" />
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8"
+                                android:text="" android:textSize="11sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="The template has 20 rows — add more if needed."
+                        android:textSize="12sp"
+                        android:textColor="#888888"
+                        android:layout_marginBottom="20dp" />
 
                     <Button
                         android:id="@+id/btnImportCsv"
@@ -127,9 +174,9 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Form section (shown after CSV import) -->
+    <!-- ── Preview section ───────────────────────────────────────────────── -->
     <ScrollView
-        android:id="@+id/scrollForm"
+        android:id="@+id/scrollPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
@@ -141,25 +188,33 @@
             android:padding="20dp">
 
             <TextView
-                android:id="@+id/tvFormTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Custom Form"
+                android:text="Review Your Form"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="#1B2A4A"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvPreviewCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="14sp"
+                android:textColor="#666666"
                 android:layout_marginBottom="16dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="20dp"
                 app:cardCornerRadius="14dp"
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
-                    android:id="@+id/layoutQuestions"
+                    android:id="@+id/layoutPreviewQuestions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -168,23 +223,23 @@
             </androidx.cardview.widget.CardView>
 
             <Button
-                android:id="@+id/btnChangeCsv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change CSV"
-                android:textSize="13sp"
-                android:textColor="#666666"
-                android:backgroundTint="@android:color/transparent"
-                android:layout_marginBottom="8dp" />
-
-            <Button
-                android:id="@+id/btnSaveRecord"
+                android:id="@+id/btnConfirmTemplate"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Save Record"
+                android:text="Confirm &#38; Save"
                 android:textSize="16sp"
                 android:textColor="#FFFFFF"
-                android:backgroundTint="#1B2A4A" />
+                android:backgroundTint="#2D7D46"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnBackToUpload"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Go Back"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:backgroundTint="@android:color/transparent" />
 
         </LinearLayout>
     </ScrollView>

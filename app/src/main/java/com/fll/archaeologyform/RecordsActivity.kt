@@ -27,7 +27,7 @@ class RecordsActivity : AppCompatActivity() {
     private fun loadRecords() {
         val dir = File(filesDir, "records")
         val files = dir.listFiles()
-            ?.filter { it.extension == "json" || it.extension == "txt" }
+            ?.filter { it.extension == "json" || it.extension == "txt" || it.extension == "csv" }
             ?.sortedByDescending { it.lastModified() }
 
         if (files.isNullOrEmpty()) {
@@ -82,6 +82,24 @@ class RecordsActivity : AppCompatActivity() {
 
             val lat = json.optString("latitude").toDoubleOrNull()
             val lon = json.optString("longitude").toDoubleOrNull()
+            if (lat != null && lon != null) {
+                addLabel(content, "GPS: ${"%.2f".format(lat)}, ${"%.2f".format(lon)}", 12f, "#666666")
+            }
+        } else if (file.extension == "csv") {
+            val lines = file.readLines().filter { it.isNotBlank() }
+            val headers = lines.getOrNull(0)?.split(",")?.map { it.trim('"') } ?: emptyList()
+            val values = lines.getOrNull(1)?.split(",")?.map { it.trim('"') } ?: emptyList()
+            val datetime = values.getOrNull(headers.indexOf("datetime"))?.takeIf { it.isNotEmpty() }
+            val lat = values.getOrNull(headers.indexOf("latitude"))?.toDoubleOrNull()
+            val lon = values.getOrNull(headers.indexOf("longitude"))?.toDoubleOrNull()
+            addLabel(content, "  Custom Form", 12f, "#999999")
+            addLabel(content, datetime ?: file.nameWithoutExtension, 15f, "#222222")
+            // Show first non-metadata answer as preview
+            val firstAnswerIdx = headers.indexOfFirst { it != "datetime" && it != "latitude" && it != "longitude" }
+            if (firstAnswerIdx >= 0) {
+                val preview = values.getOrNull(firstAnswerIdx)?.takeIf { it.isNotEmpty() }
+                preview?.let { addLabel(content, it, 14f, "#333333") }
+            }
             if (lat != null && lon != null) {
                 addLabel(content, "GPS: ${"%.2f".format(lat)}, ${"%.2f".format(lon)}", 12f, "#666666")
             }

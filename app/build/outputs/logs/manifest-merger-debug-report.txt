@@ -1,20 +1,20 @@
 -- Merging decision tree log ---
 provider#androidx.core.content.FileProvider
-INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:67:9-75:20
+INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:73:9-81:20
 	android:grantUriPermissions
-		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:71:13-47
+		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:77:13-47
 	android:authorities
 		INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:69:13-64
+		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:75:13-64
 	android:exported
-		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:70:13-37
+		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:76:13-37
 	android:name
-		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:68:13-62
+		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:74:13-62
 manifest
-ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:2:1-79:12
-INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:2:1-79:12
-INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:2:1-79:12
-INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:2:1-79:12
+ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:2:1-85:12
+INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:2:1-85:12
+INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:2:1-85:12
+INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:2:1-85:12
 MERGED from [androidx.databinding:viewbinding:8.3.0] C:\Users\evan_\.gradle\caches\transforms-3\f68c5515fef52457f08700af6c40d131\transformed\jetified-viewbinding-8.3.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\evan_\.gradle\caches\transforms-3\99f61219cffd648f152f7b0a70bbc899\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\evan_\.gradle\caches\transforms-3\0a0c85958099d303ab807766789ee5b3\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
@@ -129,8 +129,8 @@ ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\mai
 	android:name
 		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:15:22-77
 application
-ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:18:5-77:19
-INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:18:5-77:19
+ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:18:5-83:19
+INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:18:5-83:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\evan_\.gradle\caches\transforms-3\99f61219cffd648f152f7b0a70bbc899\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\evan_\.gradle\caches\transforms-3\99f61219cffd648f152f7b0a70bbc899\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\evan_\.gradle\caches\transforms-3\0a0c85958099d303ab807766789ee5b3\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -229,12 +229,20 @@ ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\mai
 		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:64:13-37
 	android:name
 		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:63:13-47
-meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:72:13-74:54
-	android:resource
-		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:74:17-51
+activity#com.fll.archaeologyform.GlassesStreamActivity
+ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:67:9-70:52
+	android:screenOrientation
+		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:70:13-49
+	android:exported
+		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:69:13-37
 	android:name
-		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:73:17-67
+		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:68:13-50
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:78:13-80:54
+	android:resource
+		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:80:17-51
+	android:name
+		ADDED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml:79:17-67
 uses-sdk
 INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml

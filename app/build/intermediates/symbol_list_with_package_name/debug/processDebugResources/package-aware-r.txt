@@ -2979,6 +2979,7 @@ drawable btn_radio_on_to_off_mtrl_animation
 drawable circle_bg_blue
 drawable circle_bg_green
 drawable circle_bg_navy
+drawable circle_bg_purple
 drawable design_fab_background
 drawable design_ic_visibility
 drawable design_ic_visibility_off
@@ -3176,8 +3177,9 @@ id bounceBoth
 id bounceEnd
 id bounceStart
 id btnBack
-id btnChangeCsv
+id btnBackToUpload
 id btnClear
+id btnConfirmTemplate
 id btnConnect
 id btnConnectGlasses
 id btnDownloadTemplate
@@ -3188,6 +3190,8 @@ id btnRecord
 id btnRetryListen
 id btnSave
 id btnSaveRecord
+id btnStartStream
+id btnStopStream
 id btnTakePhoto
 id buttonPanel
 id cache_measures
@@ -3196,6 +3200,7 @@ id cancel_button
 id cardConnect
 id cardCustomForm
 id cardFieldNotes
+id cardGlassesStream
 id cardGps
 id cardMetadata
 id cardNotes
@@ -3331,13 +3336,14 @@ id italic
 id item_touch_helper_previous_elevation
 id ivDetailPhoto
 id ivPhoto
+id ivStream
 id jumpToEnd
 id jumpToStart
 id labeled
 id layout
 id layoutFields
 id layoutMetadata
-id layoutQuestions
+id layoutPreviewQuestions
 id left
 id leftToRight
 id legacy
@@ -3479,9 +3485,9 @@ id sawtooth
 id scale
 id screen
 id scroll
-id scrollForm
 id scrollIndicatorDown
 id scrollIndicatorUp
+id scrollPreview
 id scrollSetup
 id scrollView
 id scrollable
@@ -3589,7 +3595,7 @@ id tvDateTime
 id tvDetailDate
 id tvDetailGps
 id tvFieldNotes
-id tvFormTitle
+id tvFrameCount
 id tvGlassesIcon
 id tvGlassesStatus
 id tvHandsFreeBar
@@ -3598,9 +3604,12 @@ id tvNoRecords
 id tvNotes
 id tvPhotoStatus
 id tvPhotoStepLabel
+id tvPreviewCount
 id tvProgressText
+id tvQuestionDescription
 id tvStatus
 id tvStepIndicator
+id tvStreamStatus
 id tvVoiceQuestionsLabel
 id tvVoiceStatus
 id unchecked
@@ -3742,6 +3751,7 @@ layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_custom_form
+layout activity_glasses_stream
 layout activity_home
 layout activity_main
 layout activity_photo_documentation

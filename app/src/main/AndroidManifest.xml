@@ -63,6 +63,12 @@
             android:name=".CustomFormActivity"
             android:exported="false" />
 
+        <!-- Glasses Live Stream -->
+        <activity
+            android:name=".GlassesStreamActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <!-- FileProvider for phone camera fallback URIs -->
         <provider
             android:name="androidx.core.content.FileProvider"

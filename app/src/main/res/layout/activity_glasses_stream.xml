@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1B2A4A"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="16dp"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="← Back"
+            android:textSize="13sp"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#2A3E63"
+            style="@style/Widget.MaterialComponents.Button" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Glasses Live View"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tvStreamStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stopped"
+            android:textSize="12sp"
+            android:textColor="#A0B0CC" />
+    </LinearLayout>
+
+    <!-- Video preview — fills remaining space -->
+    <ImageView
+        android:id="@+id/ivStream"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        android:background="#111111" />
+
+    <!-- Controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1B2A4A"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="16dp">
+
+        <!-- Frame counter -->
+        <TextView
+            android:id="@+id/tvFrameCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Frames: 0"
+            android:textColor="#A0B0CC"
+            android:textSize="12sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Start / Stop buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnStartStream"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Start Stream"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#22AA22"
+                style="@style/Widget.MaterialComponents.Button" />
+
+            <Button
+                android:id="@+id/btnStopStream"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Stop"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#AA2222"
+                android:enabled="false"
+                style="@style/Widget.MaterialComponents.Button" />
+        </LinearLayout>
+
+        <!-- Hint about Instagram -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tip: Screen-record this view to share or use as a camera in Instagram Live / Twitch."
+            android:textSize="11sp"
+            android:textColor="#607080"
+            android:gravity="center"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
+
+</LinearLayout>

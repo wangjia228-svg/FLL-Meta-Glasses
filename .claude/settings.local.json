@@ -17,7 +17,13 @@
       "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap\" -p /tmp/RegistrationState.class 2>&1)",
       "Read(//tmp/mwdat_cam/**)",
       "Bash(unzip -p classes.jar com/meta/wearable/dat/camera/StreamSession.class)",
-      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap\" -p /tmp/StreamSession.class)"
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap\" -p /tmp/StreamSession.class)",
+      "Bash(./gradlew :app:compileDebugKotlin)",
+      "Bash(cmd /c \"gradlew.bat :app:compileDebugKotlin 2>&1\")",
+      "Bash(./gradlew.bat :app:compileDebugKotlin)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(python3 -c \"import sys,json; [print\\(f['path']\\) for f in json.load\\(sys.stdin\\)]\")"
     ]
   }
 }
