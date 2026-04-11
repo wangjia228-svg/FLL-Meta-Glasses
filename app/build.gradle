@@ -34,6 +34,12 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    packaging {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE', 'META-INF/NOTICE', 'META-INF/LICENSE.txt']
+        }
+    }
 }
 
 dependencies {
@@ -47,4 +53,19 @@ dependencies {
     // Meta Wearables Device Access Toolkit
     implementation 'com.meta.wearable:mwdat-core:0.4.0'
     implementation 'com.meta.wearable:mwdat-camera:0.4.0'
+
+    // Google Sign-In (for YouTube OAuth2)
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+
+    // YouTube Data API v3
+    implementation('com.google.api-client:google-api-client-android:2.2.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation('com.google.apis:google-api-services-youtube:v3-rev20230816-2.0.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation 'com.google.http-client:google-http-client-gson:1.43.3'
+
+    // RTMP streaming
+    implementation 'io.github.pedroSG94.RootEncoder:library:2.4.1'
 }

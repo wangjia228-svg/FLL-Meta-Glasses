@@ -379,7 +379,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Glasses Live View"
+                            android:text="Livestream"
                             android:textSize="17sp"
                             android:textStyle="bold"
                             android:textColor="#1B2A4A" />
@@ -387,7 +387,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Stream your glasses camera to your phone"
+                            android:text="Stream your glasses camera live to YouTube"
                             android:textSize="13sp"
                             android:textColor="#6B7C93"
                             android:layout_marginTop="3dp" />
