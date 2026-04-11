@@ -20,15 +20,7 @@ MERGED from [com.google.android.material:material:1.11.0] C:\Users\evan_\.gradle
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\evan_\.gradle\caches\transforms-3\0a0c85958099d303ab807766789ee5b3\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\evan_\.gradle\caches\transforms-3\16504a0b699031b899c4b3d05ba11294\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\evan_\.gradle\caches\transforms-3\76f4977e6155f2c0a3c87d079788071b\transformed\appcompat-1.6.1\AndroidManifest.xml:17:1-22:12
-MERGED from [io.github.pedroSG94.RootEncoder:library:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\9c486848adb1f67d046f8a8449afc1cc\transformed\jetified-library-2.4.1\AndroidManifest.xml:2:1-7:12
-MERGED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:17:1-40:12
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\evan_\.gradle\caches\transforms-3\246b63d6ecefec687d7f5fabda42af07\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\a5de6021f29dab4b3b2006edc92b73b2\transformed\jetified-play-services-auth-api-phone-18.0.1\AndroidManifest.xml:2:1-7:12
-MERGED from [com.google.android.gms:play-services-auth-base:18.0.4] C:\Users\evan_\.gradle\caches\transforms-3\6e16cf87c2103a8c5a1e83075c0dd227\transformed\jetified-play-services-auth-base-18.0.4\AndroidManifest.xml:2:1-7:12
-MERGED from [com.google.android.gms:play-services-fido:20.0.1] C:\Users\evan_\.gradle\caches\transforms-3\2cb097aab179ded739b814bc30769568\transformed\jetified-play-services-fido-20.0.1\AndroidManifest.xml:2:1-10:12
-MERGED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\39d8b3b7d9f97b85783f505ce65aaef8\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:16:1-24:12
-MERGED from [com.google.android.gms:play-services-tasks:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\aeba9ea3b49540ed64d7560b97853745\transformed\jetified-play-services-tasks-18.0.1\AndroidManifest.xml:2:1-6:12
-MERGED from [com.google.android.gms:play-services-basement:18.2.0] C:\Users\evan_\.gradle\caches\transforms-3\3e31c9fae010953f62f860ea5b3bd1d7\transformed\jetified-play-services-basement-18.2.0\AndroidManifest.xml:16:1-26:12
 MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\evan_\.gradle\caches\transforms-3\e37969d635e1fc448df39d4c4c68610b\transformed\fragment-1.3.6\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.activity:activity:1.8.0] C:\Users\evan_\.gradle\caches\transforms-3\cff681357de95fa42afa3bd8d8b74f83\transformed\jetified-activity-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:3:1-73:12
@@ -59,12 +51,6 @@ MERGED from [androidx.lifecycle:lifecycle-livedata:2.9.4] C:\Users\evan_\.gradle
 MERGED from [androidx.lifecycle:lifecycle-process:2.9.4] C:\Users\evan_\.gradle\caches\transforms-3\3efd372766770429202cb909cf71816f\transformed\jetified-lifecycle-process-2.9.4\AndroidManifest.xml:17:1-35:12
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.9.4] C:\Users\evan_\.gradle\caches\transforms-3\17a6c2c4f3f73afdfd5e0843abe87547\transformed\lifecycle-livedata-core-2.9.4\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.lifecycle:lifecycle-service:2.9.4] C:\Users\evan_\.gradle\caches\transforms-3\f50cfdc4ed26fcbe2177bb9717b15136\transformed\jetified-lifecycle-service-2.9.4\AndroidManifest.xml:2:1-7:12
-MERGED from [io.github.pedroSG94.RootEncoder:encoder:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\d93cf28ade1e97a37c6456cdb19405d5\transformed\jetified-encoder-2.4.1\AndroidManifest.xml:2:1-7:12
-MERGED from [io.github.pedroSG94.RootEncoder:rtmp:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\d3cf9ebc9edf34806ef54517001e1944\transformed\jetified-rtmp-2.4.1\AndroidManifest.xml:2:1-7:12
-MERGED from [io.github.pedroSG94.RootEncoder:rtsp:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\03d201541d678fc63b608f4acbbce1a2\transformed\jetified-rtsp-2.4.1\AndroidManifest.xml:2:1-7:12
-MERGED from [io.github.pedroSG94.RootEncoder:udp:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\837a2cbaa4218873c68cd75ed0918f12\transformed\jetified-udp-2.4.1\AndroidManifest.xml:2:1-7:12
-MERGED from [io.github.pedroSG94.RootEncoder:srt:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\24d0ffaf67c7153495ecde9e1baa85af\transformed\jetified-srt-2.4.1\AndroidManifest.xml:17:1-22:12
-MERGED from [io.github.pedroSG94.RootEncoder:common:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\f13ac42f0194eb79138db6f001204494\transformed\jetified-common-2.4.1\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.core:core-viewtree:1.0.0] C:\Users\evan_\.gradle\caches\transforms-3\0487f6218cc1fc3d2f8b5319b649e491\transformed\jetified-core-viewtree-1.0.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\evan_\.gradle\caches\transforms-3\4770ac61f512071f9af56fbc3ffae2e3\transformed\cardview-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\evan_\.gradle\caches\transforms-3\90465633e1a8f3b5c0090452ffd6dbaa\transformed\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
@@ -155,16 +141,6 @@ MERGED from [com.google.android.material:material:1.11.0] C:\Users\evan_\.gradle
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\evan_\.gradle\caches\transforms-3\99f61219cffd648f152f7b0a70bbc899\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\evan_\.gradle\caches\transforms-3\0a0c85958099d303ab807766789ee5b3\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\evan_\.gradle\caches\transforms-3\0a0c85958099d303ab807766789ee5b3\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
-MERGED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:22:5-38:19
-MERGED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:22:5-38:19
-MERGED from [com.google.android.gms:play-services-fido:20.0.1] C:\Users\evan_\.gradle\caches\transforms-3\2cb097aab179ded739b814bc30769568\transformed\jetified-play-services-fido-20.0.1\AndroidManifest.xml:7:5-8:19
-MERGED from [com.google.android.gms:play-services-fido:20.0.1] C:\Users\evan_\.gradle\caches\transforms-3\2cb097aab179ded739b814bc30769568\transformed\jetified-play-services-fido-20.0.1\AndroidManifest.xml:7:5-8:19
-MERGED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\39d8b3b7d9f97b85783f505ce65aaef8\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:19:5-23:19
-MERGED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\39d8b3b7d9f97b85783f505ce65aaef8\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:19:5-23:19
-MERGED from [com.google.android.gms:play-services-tasks:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\aeba9ea3b49540ed64d7560b97853745\transformed\jetified-play-services-tasks-18.0.1\AndroidManifest.xml:5:5-20
-MERGED from [com.google.android.gms:play-services-tasks:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\aeba9ea3b49540ed64d7560b97853745\transformed\jetified-play-services-tasks-18.0.1\AndroidManifest.xml:5:5-20
-MERGED from [com.google.android.gms:play-services-basement:18.2.0] C:\Users\evan_\.gradle\caches\transforms-3\3e31c9fae010953f62f860ea5b3bd1d7\transformed\jetified-play-services-basement-18.2.0\AndroidManifest.xml:20:5-24:19
-MERGED from [com.google.android.gms:play-services-basement:18.2.0] C:\Users\evan_\.gradle\caches\transforms-3\3e31c9fae010953f62f860ea5b3bd1d7\transformed\jetified-play-services-basement-18.2.0\AndroidManifest.xml:20:5-24:19
 MERGED from [com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:26:5-71:19
 MERGED from [com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:26:5-71:19
 MERGED from [com.meta.wearable:mwdat-core:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\1b603f751caa7f9591ad121bc591fc43\transformed\jetified-mwdat-core-0.4.0\AndroidManifest.xml:26:5-71:19
@@ -293,24 +269,8 @@ MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\evan_\.gradl
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\evan_\.gradle\caches\transforms-3\16504a0b699031b899c4b3d05ba11294\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\evan_\.gradle\caches\transforms-3\76f4977e6155f2c0a3c87d079788071b\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\evan_\.gradle\caches\transforms-3\76f4977e6155f2c0a3c87d079788071b\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:library:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\9c486848adb1f67d046f8a8449afc1cc\transformed\jetified-library-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:library:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\9c486848adb1f67d046f8a8449afc1cc\transformed\jetified-library-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\evan_\.gradle\caches\transforms-3\246b63d6ecefec687d7f5fabda42af07\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\evan_\.gradle\caches\transforms-3\246b63d6ecefec687d7f5fabda42af07\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\a5de6021f29dab4b3b2006edc92b73b2\transformed\jetified-play-services-auth-api-phone-18.0.1\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\a5de6021f29dab4b3b2006edc92b73b2\transformed\jetified-play-services-auth-api-phone-18.0.1\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-auth-base:18.0.4] C:\Users\evan_\.gradle\caches\transforms-3\6e16cf87c2103a8c5a1e83075c0dd227\transformed\jetified-play-services-auth-base-18.0.4\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-auth-base:18.0.4] C:\Users\evan_\.gradle\caches\transforms-3\6e16cf87c2103a8c5a1e83075c0dd227\transformed\jetified-play-services-auth-base-18.0.4\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-fido:20.0.1] C:\Users\evan_\.gradle\caches\transforms-3\2cb097aab179ded739b814bc30769568\transformed\jetified-play-services-fido-20.0.1\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-fido:20.0.1] C:\Users\evan_\.gradle\caches\transforms-3\2cb097aab179ded739b814bc30769568\transformed\jetified-play-services-fido-20.0.1\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\39d8b3b7d9f97b85783f505ce65aaef8\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:18:5-43
-MERGED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\39d8b3b7d9f97b85783f505ce65aaef8\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:18:5-43
-MERGED from [com.google.android.gms:play-services-tasks:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\aeba9ea3b49540ed64d7560b97853745\transformed\jetified-play-services-tasks-18.0.1\AndroidManifest.xml:4:5-43
-MERGED from [com.google.android.gms:play-services-tasks:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\aeba9ea3b49540ed64d7560b97853745\transformed\jetified-play-services-tasks-18.0.1\AndroidManifest.xml:4:5-43
-MERGED from [com.google.android.gms:play-services-basement:18.2.0] C:\Users\evan_\.gradle\caches\transforms-3\3e31c9fae010953f62f860ea5b3bd1d7\transformed\jetified-play-services-basement-18.2.0\AndroidManifest.xml:18:5-43
-MERGED from [com.google.android.gms:play-services-basement:18.2.0] C:\Users\evan_\.gradle\caches\transforms-3\3e31c9fae010953f62f860ea5b3bd1d7\transformed\jetified-play-services-basement-18.2.0\AndroidManifest.xml:18:5-43
 MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\evan_\.gradle\caches\transforms-3\e37969d635e1fc448df39d4c4c68610b\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\evan_\.gradle\caches\transforms-3\e37969d635e1fc448df39d4c4c68610b\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.activity:activity:1.8.0] C:\Users\evan_\.gradle\caches\transforms-3\cff681357de95fa42afa3bd8d8b74f83\transformed\jetified-activity-1.8.0\AndroidManifest.xml:20:5-44
@@ -371,18 +331,6 @@ MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.9.4] C:\Users\evan_\.g
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.9.4] C:\Users\evan_\.gradle\caches\transforms-3\17a6c2c4f3f73afdfd5e0843abe87547\transformed\lifecycle-livedata-core-2.9.4\AndroidManifest.xml:20:5-44
 MERGED from [androidx.lifecycle:lifecycle-service:2.9.4] C:\Users\evan_\.gradle\caches\transforms-3\f50cfdc4ed26fcbe2177bb9717b15136\transformed\jetified-lifecycle-service-2.9.4\AndroidManifest.xml:5:5-44
 MERGED from [androidx.lifecycle:lifecycle-service:2.9.4] C:\Users\evan_\.gradle\caches\transforms-3\f50cfdc4ed26fcbe2177bb9717b15136\transformed\jetified-lifecycle-service-2.9.4\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:encoder:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\d93cf28ade1e97a37c6456cdb19405d5\transformed\jetified-encoder-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:encoder:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\d93cf28ade1e97a37c6456cdb19405d5\transformed\jetified-encoder-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:rtmp:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\d3cf9ebc9edf34806ef54517001e1944\transformed\jetified-rtmp-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:rtmp:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\d3cf9ebc9edf34806ef54517001e1944\transformed\jetified-rtmp-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:rtsp:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\03d201541d678fc63b608f4acbbce1a2\transformed\jetified-rtsp-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:rtsp:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\03d201541d678fc63b608f4acbbce1a2\transformed\jetified-rtsp-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:udp:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\837a2cbaa4218873c68cd75ed0918f12\transformed\jetified-udp-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:udp:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\837a2cbaa4218873c68cd75ed0918f12\transformed\jetified-udp-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:srt:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\24d0ffaf67c7153495ecde9e1baa85af\transformed\jetified-srt-2.4.1\AndroidManifest.xml:20:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:srt:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\24d0ffaf67c7153495ecde9e1baa85af\transformed\jetified-srt-2.4.1\AndroidManifest.xml:20:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:common:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\f13ac42f0194eb79138db6f001204494\transformed\jetified-common-2.4.1\AndroidManifest.xml:5:5-44
-MERGED from [io.github.pedroSG94.RootEncoder:common:2.4.1] C:\Users\evan_\.gradle\caches\transforms-3\f13ac42f0194eb79138db6f001204494\transformed\jetified-common-2.4.1\AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core-viewtree:1.0.0] C:\Users\evan_\.gradle\caches\transforms-3\0487f6218cc1fc3d2f8b5319b649e491\transformed\jetified-core-viewtree-1.0.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core-viewtree:1.0.0] C:\Users\evan_\.gradle\caches\transforms-3\0487f6218cc1fc3d2f8b5319b649e491\transformed\jetified-core-viewtree-1.0.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\evan_\.gradle\caches\transforms-3\4770ac61f512071f9af56fbc3ffae2e3\transformed\cardview-1.0.0\AndroidManifest.xml:20:5-44
@@ -419,40 +367,6 @@ MERGED from [com.facebook.soloader:soloader:0.12.1] C:\Users\evan_\.gradle\cache
 		INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
 		INJECTED from C:\Users\evan_\OneDrive\Documents\GitHub\FLL-Meta-Glasses\app\src\main\AndroidManifest.xml
-activity#com.google.android.gms.auth.api.signin.internal.SignInHubActivity
-ADDED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:23:9-27:75
-	android:excludeFromRecents
-		ADDED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:25:13-46
-	android:exported
-		ADDED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:26:13-37
-	android:theme
-		ADDED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:27:13-72
-	android:name
-		ADDED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:24:13-93
-service#com.google.android.gms.auth.api.signin.RevocationBoundService
-ADDED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:33:9-37:51
-	android:exported
-		ADDED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:35:13-36
-	android:visibleToInstantApps
-		ADDED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:37:13-48
-	android:permission
-		ADDED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:36:13-107
-	android:name
-		ADDED from [com.google.android.gms:play-services-auth:20.7.0] C:\Users\evan_\.gradle\caches\transforms-3\d974dcedefaad90bde3cf0d27d84cfae\transformed\jetified-play-services-auth-20.7.0\AndroidManifest.xml:34:13-89
-activity#com.google.android.gms.common.api.GoogleApiActivity
-ADDED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\39d8b3b7d9f97b85783f505ce65aaef8\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:20:9-22:45
-	android:exported
-		ADDED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\39d8b3b7d9f97b85783f505ce65aaef8\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:22:19-43
-	android:theme
-		ADDED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\39d8b3b7d9f97b85783f505ce65aaef8\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:21:19-78
-	android:name
-		ADDED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\evan_\.gradle\caches\transforms-3\39d8b3b7d9f97b85783f505ce65aaef8\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:20:19-85
-meta-data#com.google.android.gms.version
-ADDED from [com.google.android.gms:play-services-basement:18.2.0] C:\Users\evan_\.gradle\caches\transforms-3\3e31c9fae010953f62f860ea5b3bd1d7\transformed\jetified-play-services-basement-18.2.0\AndroidManifest.xml:21:9-23:69
-	android:value
-		ADDED from [com.google.android.gms:play-services-basement:18.2.0] C:\Users\evan_\.gradle\caches\transforms-3\3e31c9fae010953f62f860ea5b3bd1d7\transformed\jetified-play-services-basement-18.2.0\AndroidManifest.xml:23:13-66
-	android:name
-		ADDED from [com.google.android.gms:play-services-basement:18.2.0] C:\Users\evan_\.gradle\caches\transforms-3\3e31c9fae010953f62f860ea5b3bd1d7\transformed\jetified-play-services-basement-18.2.0\AndroidManifest.xml:22:13-58
 queries
 ADDED from [com.meta.wearable:mwdat-camera:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\5b44656d393e6b2e30ec74b436bd8465\transformed\jetified-mwdat-camera-0.4.0\AndroidManifest.xml:15:5-18:15
 MERGED from [com.meta.wearable:mwdat-core:0.4.0] C:\Users\evan_\.gradle\caches\transforms-3\1b603f751caa7f9591ad121bc591fc43\transformed\jetified-mwdat-core-0.4.0\AndroidManifest.xml:15:5-18:15

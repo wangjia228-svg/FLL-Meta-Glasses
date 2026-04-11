@@ -11,7 +11,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://jitpack.io") }
         maven {
             url = uri("https://maven.pkg.github.com/facebook/meta-wearables-dat-android")
             credentials {
@@ -20,9 +19,6 @@ dependencyResolutionManagement {
                 if (localFile.exists()) localProps.load(localFile.newInputStream())
                 username = localProps.getProperty("github_username") ?: github_username
                 password = localProps.getProperty("github_token") ?: github_token
-            }
-            content {
-                includeGroup "com.meta.wearable"
             }
         }
     }

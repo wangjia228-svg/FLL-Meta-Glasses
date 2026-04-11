@@ -20,11 +20,9 @@ id btnResetForm
 id btnRetryListen
 id btnSave
 id btnSaveRecord
-id btnShareStream
 id btnStartStream
 id btnStopStream
 id btnTakePhoto
-id btnYouTubeStream
 id cardConnect
 id cardCustomForm
 id cardFieldNotes
@@ -71,7 +69,6 @@ id tvStepIndicator
 id tvStreamStatus
 id tvVoiceQuestionsLabel
 id tvVoiceStatus
-id tvYouTubeStatus
 layout activity_custom_form
 layout activity_glasses_stream
 layout activity_home

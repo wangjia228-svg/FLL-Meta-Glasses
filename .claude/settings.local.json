@@ -23,8 +23,7 @@
       "Bash(./gradlew.bat :app:compileDebugKotlin)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(python3 -c \"import sys,json; [print\\(f['path']\\) for f in json.load\\(sys.stdin\\)]\")",
-      "WebFetch(domain:developers.google.com)"
+      "Bash(python3 -c \"import sys,json; [print\\(f['path']\\) for f in json.load\\(sys.stdin\\)]\")"
     ]
   }
 }

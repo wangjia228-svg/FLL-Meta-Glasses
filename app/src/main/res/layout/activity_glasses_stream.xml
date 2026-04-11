@@ -31,7 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Livestream"
+            android:text="Glasses Live View"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -85,12 +85,10 @@
             <Button
                 android:id="@+id/btnStartStream"
                 android:layout_width="0dp"
-                android:layout_height="64dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
                 android:text="Start Stream"
-                android:textSize="15sp"
-                android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#22AA22"
                 style="@style/Widget.MaterialComponents.Button" />
@@ -98,58 +96,25 @@
             <Button
                 android:id="@+id/btnStopStream"
                 android:layout_width="0dp"
-                android:layout_height="64dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:text="Stop Stream"
-                android:textSize="15sp"
-                android:textStyle="bold"
+                android:text="Stop"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#AA2222"
                 android:enabled="false"
                 style="@style/Widget.MaterialComponents.Button" />
         </LinearLayout>
 
-        <!-- YouTube streaming section -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#2A3E63"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="12dp" />
-
+        <!-- Hint about Instagram -->
         <TextView
-            android:id="@+id/tvYouTubeStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="YouTube: Not streaming"
-            android:textSize="12sp"
-            android:textColor="#A0B0CC"
+            android:text="Tip: Screen-record this view to share or use as a camera in Instagram Live / Twitch."
+            android:textSize="11sp"
+            android:textColor="#607080"
             android:gravity="center"
-            android:layout_marginBottom="6dp" />
-
-        <Button
-            android:id="@+id/btnShareStream"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="Share Link"
-            android:textSize="13sp"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#1565C0"
-            android:visibility="gone"
-            android:layout_marginBottom="8dp"
-            style="@style/Widget.MaterialComponents.Button" />
-
-        <Button
-            android:id="@+id/btnYouTubeStream"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="&#127910; Stream to YouTube"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#CC0000"
-            style="@style/Widget.MaterialComponents.Button" />
+            android:layout_marginTop="10dp" />
     </LinearLayout>
 
 </LinearLayout>
