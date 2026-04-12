@@ -107,16 +107,17 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private val questions = listOf(
         Pair("artifact",  "What artifact was found?"),
-        Pair("depth",     "What is the depth of the artifact in centimeters?"),
-        Pair("elevation", "What is the elevation at this location?"),
-        Pair("condition", "Describe the condition of the artifact."),
-        Pair("notes",     "Any additional notes or observations?")
+        Pair("depth",     "At what depth was it found?"),
+        Pair("elevation", "What is the elevation?"),
+        Pair("condition", "What is its condition?"),
+        Pair("notes",     "Any additional notes?")
     )
 
     private data class CustomField(val label: String, val description: String, val type: String)
     private var customFields: List<CustomField>? = null
     private var photoForTemplateQuestion = false
     private var questionsStarted = false
+    private var questionsComplete = false
     private var recordName = ""
 
     private val locationListener = object : LocationListener {
@@ -578,6 +579,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private fun startVoiceQuestions() {
         currentQuestionIndex = 0
+        questionsComplete = false
         responses.clear()
         binding.tvFieldNotes.text = ""
         binding.tvStepIndicator.text = "Questions"
@@ -673,12 +675,13 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 }
 
                 if (answer.isNotEmpty()) handleAnswer(answer)
-                else startListening()
+                else if (!questionsComplete) startListening()
             }
 
             override fun onError(error: Int) {
                 isListening = false
-                startListening()
+                // ERROR_CLIENT means we called stopListening() ourselves — don't restart
+                if (!questionsComplete && error != SpeechRecognizer.ERROR_CLIENT) startListening()
             }
 
             override fun onBeginningOfSpeech() {}
@@ -726,10 +729,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
 
         currentQuestionIndex++
-        speak("Got it.") { handler.postDelayed({ askNextQuestion() }, 600) }
+        speak("Got it.") { handler.postDelayed({ askNextQuestion() }, 300) }
     }
 
     private fun onVoiceComplete() {
+        questionsComplete = true
         binding.tvCurrentQuestion.text = "All questions answered."
         binding.tvQuestionDescription.visibility = View.GONE
         binding.tvVoiceStatus.text = "Complete"
@@ -754,6 +758,9 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 120000L)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 10000L)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 8000L)
         }
 
         speechRecognizer.setRecognitionListener(object : RecognitionListener {
@@ -773,9 +780,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
             override fun onError(error: Int) {
                 isListening = false
-                recordName = ""
-                saveRecord()
-                speak("Saving.") { handler.postDelayed({ finish() }, 1200) }
+                // Silently retry — don't auto-save with no name
+                handler.postDelayed({ listenForRecordName() }, 200)
             }
             override fun onReadyForSpeech(params: Bundle?) {}
             override fun onBeginningOfSpeech() {}
@@ -790,9 +796,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             speechRecognizer.startListening(intent)
         } catch (e: Exception) {
             isListening = false
-            recordName = ""
-            saveRecord()
-            handler.postDelayed({ finish() }, 1000)
+            handler.postDelayed({ listenForRecordName() }, 500)
         }
     }
 
@@ -873,47 +877,53 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun saveRecord() {
-        val datetime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-        val dir = File(filesDir, "records")
-        if (!dir.exists()) dir.mkdirs()
-        val ts = recordTimestamp.ifEmpty {
-            SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(Date())
-        }
-
-        val nameSanitized = recordName
-            .replace(Regex("[^a-zA-Z0-9 _\\-]"), "").replace(' ', '_').take(30)
-        val fileName = if (nameSanitized.isNotEmpty()) "${nameSanitized}_$ts" else "record_$ts"
-
-        val fields = customFields
-        if (fields != null) {
-            fun esc(v: String) = if (v.contains(',') || v.contains('"') || v.contains('\n'))
-                "\"${v.replace("\"", "\"\"")}\"" else v
-            val headers = (listOf("name", "datetime", "latitude", "longitude") + fields.map { it.label })
-                .joinToString(",") { esc(it) }
-            val values = (listOf(
-                recordName,
-                datetime,
-                currentLocation?.latitude?.toString() ?: "",
-                currentLocation?.longitude?.toString() ?: ""
-            ) + fields.map { responses[it.label] ?: "" }).joinToString(",") { esc(it) }
-            File(dir, "$fileName.csv").writeText("$headers\n$values\n")
-        } else {
-            val json = JSONObject().apply {
-                put("type", "field_record")
-                put("name", recordName)
-                put("datetime", datetime)
-                put("photo_file", photoFile?.absolutePath ?: "")
-                put("latitude", currentLocation?.latitude?.toString() ?: "")
-                put("longitude", currentLocation?.longitude?.toString() ?: "")
-                responses.forEach { (k, v) -> put(k, v) }
+        try {
+            val datetime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date())
+            val dir = File(filesDir, "records")
+            dir.mkdirs()
+            val ts = recordTimestamp.ifEmpty {
+                SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US).format(Date())
             }
-            File(dir, "$fileName.json").writeText(json.toString(2))
-        }
 
-        if (!handsFreeMode) {
-            Toast.makeText(this, "Field record saved!", Toast.LENGTH_SHORT).show()
-            binding.btnSaveRecord.text = "Saved!"
-            binding.btnSaveRecord.isEnabled = false
+            val nameSanitized = recordName
+                .replace(Regex("[^a-zA-Z0-9 _\\-]"), "").replace(' ', '_').take(30)
+            val fileName = if (nameSanitized.isNotEmpty()) "${nameSanitized}_$ts" else "record_$ts"
+
+            val fields = customFields
+            if (fields != null) {
+                fun esc(v: String) = if (v.contains(',') || v.contains('"') || v.contains('\n'))
+                    "\"${v.replace("\"", "\"\"")}\"" else v
+                val headers = (listOf("name", "datetime", "latitude", "longitude") + fields.map { it.label })
+                    .joinToString(",") { esc(it) }
+                val values = (listOf(
+                    recordName,
+                    datetime,
+                    currentLocation?.latitude?.toString() ?: "",
+                    currentLocation?.longitude?.toString() ?: ""
+                ) + fields.map { responses[it.label] ?: "" }).joinToString(",") { esc(it) }
+                File(dir, "$fileName.csv").writeText("$headers\n$values\n")
+            } else {
+                val json = JSONObject().apply {
+                    put("type", "field_record")
+                    put("name", recordName)
+                    put("datetime", datetime)
+                    put("photo_file", photoFile?.absolutePath ?: "")
+                    put("latitude", currentLocation?.latitude?.toString() ?: "")
+                    put("longitude", currentLocation?.longitude?.toString() ?: "")
+                    responses.forEach { (k, v) -> put(k, v) }
+                }
+                File(dir, "$fileName.json").writeText(json.toString(2))
+            }
+
+            Log.d("MARP", "Record saved: $fileName")
+            Toast.makeText(this, "Record saved!", Toast.LENGTH_SHORT).show()
+            if (!handsFreeMode) {
+                binding.btnSaveRecord.text = "Saved!"
+                binding.btnSaveRecord.isEnabled = false
+            }
+        } catch (e: Exception) {
+            Log.e("MARP", "Failed to save record", e)
+            Toast.makeText(this, "Save failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -923,18 +933,34 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             onComplete?.invoke()
             return
         }
-        val uid = "utt_${System.currentTimeMillis()}"
-        val params = Bundle().apply {
-            putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_MUSIC)
+        val phoneAudio = prefs.getBoolean("phone_audio_mode", false)
+        val stream = if (phoneAudio) AudioManager.STREAM_VOICE_CALL else AudioManager.STREAM_MUSIC
+        if (phoneAudio) {
+            audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+            audioManager.isSpeakerphoneOn = true
         }
+val uid = "utt_${System.currentTimeMillis()}"
+        val params = Bundle().apply { putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, stream) }
         tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {}
             override fun onDone(utteranceId: String?) {
-                if (utteranceId == uid) handler.post { onComplete?.invoke() }
+                if (utteranceId == uid) handler.post {
+                    if (phoneAudio) {
+                        audioManager.isSpeakerphoneOn = false
+                        audioManager.mode = AudioManager.MODE_NORMAL
+                    }
+                    onComplete?.invoke()
+                }
             }
             @Deprecated("Deprecated in Java")
             override fun onError(utteranceId: String?) {
-                if (utteranceId == uid) handler.post { onComplete?.invoke() }
+                if (utteranceId == uid) handler.post {
+                    if (phoneAudio) {
+                        audioManager.isSpeakerphoneOn = false
+                        audioManager.mode = AudioManager.MODE_NORMAL
+                    }
+                    onComplete?.invoke()
+                }
             }
         })
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, params, uid)

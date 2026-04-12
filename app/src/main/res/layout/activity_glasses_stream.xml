@@ -20,9 +20,9 @@
         <Button
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="44dp"
             android:text="← Back"
-            android:textSize="13sp"
+            android:textSize="17sp"
             android:textColor="#FFFFFF"
             android:backgroundTint="#2A3E63"
             style="@style/Widget.MaterialComponents.Button" />
@@ -85,10 +85,11 @@
             <Button
                 android:id="@+id/btnStartStream"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="56dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
                 android:text="Start Stream"
+                android:textSize="18sp"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#22AA22"
                 style="@style/Widget.MaterialComponents.Button" />
@@ -96,10 +97,11 @@
             <Button
                 android:id="@+id/btnStopStream"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="56dp"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:text="Stop"
+                android:textSize="18sp"
                 android:textColor="#FFFFFF"
                 android:backgroundTint="#AA2222"
                 android:enabled="false"

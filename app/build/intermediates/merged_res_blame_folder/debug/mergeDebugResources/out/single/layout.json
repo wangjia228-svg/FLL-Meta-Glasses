@@ -24,16 +24,12 @@
         "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_home.xml"
     },
     {
-        "merged": "com.fll.archaeologyform.app-mergeDebugResources-34:/layout/activity_photo_documentation.xml",
-        "source": "com.fll.archaeologyform.app-main-37:/layout/activity_photo_documentation.xml"
-    },
-    {
-        "merged": "com.fll.archaeologyform.app-mergeDebugResources-34:/layout/activity_quick_note.xml",
-        "source": "com.fll.archaeologyform.app-main-37:/layout/activity_quick_note.xml"
-    },
-    {
         "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-mergeDebugResources-34:\\layout\\activity_main.xml",
         "source": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-main-37:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "com.fll.archaeologyform.app-mergeDebugResources-34:/layout/activity_glasses_stream.xml",
+        "source": "com.fll.archaeologyform.app-main-37:/layout/activity_glasses_stream.xml"
     },
     {
         "merged": "C:\\Users\\evan_\\.gradle\\daemon\\8.5\\com.fll.archaeologyform.app-mergeDebugResources-34:\\layout\\activity_records.xml",
