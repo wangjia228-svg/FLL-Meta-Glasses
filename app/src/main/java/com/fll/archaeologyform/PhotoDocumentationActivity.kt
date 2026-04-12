@@ -1,12 +1,9 @@
 package com.fll.archaeologyform
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -42,9 +39,6 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
     private lateinit var locationManager: LocationManager
     private lateinit var audioManager: AudioManager
 
-    private val prefs by lazy { getSharedPreferences("marp_prefs", Context.MODE_PRIVATE) }
-    private var handsFreeMode = false
-
     private var photoUri: Uri? = null
     private var photoFile: File? = null
     private var photoTimestamp: String = ""
@@ -73,10 +67,6 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
         ActivityResultContracts.TakePicture()
     ) { success ->
         if (success) onPhotoTaken()
-        else if (handsFreeMode) {
-            // Retry voice command if camera was cancelled
-            handler.postDelayed({ listenForPhotoCommand() }, 1000)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,8 +76,8 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
 
         tts = TextToSpeech(this, this)
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
 
         startLocationUpdates()
 
@@ -98,108 +88,6 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
             startListening()
         }
         binding.btnSave.setOnClickListener { saveRecord() }
-        binding.btnHandsFreeToggle.setOnClickListener { toggleHandsFreeMode() }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val globalHandsFree = prefs.getBoolean("hands_free_mode", false)
-        if (globalHandsFree != handsFreeMode) {
-            handsFreeMode = globalHandsFree
-            applyHandsFreeUI()
-            if (handsFreeMode && photoUri == null) {
-                handler.postDelayed({
-                    if (ttsReady) {
-                        speak("Photo documentation hands-free mode. Say 'take photo' to open camera.") {
-                            handler.post { listenForPhotoCommand() }
-                        }
-                    } else {
-                        handler.postDelayed({ listenForPhotoCommand() }, 2000)
-                    }
-                }, 500)
-            }
-        }
-    }
-
-    private fun toggleHandsFreeMode() {
-        handsFreeMode = !handsFreeMode
-        prefs.edit().putBoolean("hands_free_mode", handsFreeMode).apply()
-        applyHandsFreeUI()
-
-        if (handsFreeMode) {
-            speak("Hands-free mode on. Say 'take photo' to open the camera.") {
-                if (photoUri == null) handler.post { listenForPhotoCommand() }
-            }
-        } else {
-            speak("Hands-free mode off.")
-        }
-    }
-
-    private fun applyHandsFreeUI() {
-        if (handsFreeMode) {
-            binding.btnHandsFreeToggle.text = "\uD83C\uDF99 ON"
-            binding.btnHandsFreeToggle.backgroundTintList =
-                ColorStateList.valueOf(Color.parseColor("#22AA22"))
-            binding.tvHandsFreeBar.visibility = View.VISIBLE
-            binding.btnTakePhoto.visibility = View.GONE
-            binding.btnSave.visibility = View.GONE
-            binding.btnRetryListen.visibility = View.GONE
-        } else {
-            binding.btnHandsFreeToggle.text = "\uD83C\uDF99 OFF"
-            binding.btnHandsFreeToggle.backgroundTintList =
-                ColorStateList.valueOf(Color.parseColor("#555555"))
-            binding.tvHandsFreeBar.visibility = View.GONE
-            binding.btnTakePhoto.visibility = View.VISIBLE
-        }
-    }
-
-    // ── Voice-triggered photo command ─────────────────────────────────────────
-
-    private fun listenForPhotoCommand() {
-        if (isListening) return
-        isListening = true
-
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
-        }
-
-        speechRecognizer.setRecognitionListener(object : RecognitionListener {
-            override fun onResults(results: Bundle?) {
-                isListening = false
-                val candidates = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                    ?.joinToString(" ")?.lowercase() ?: ""
-                if (candidates.contains("take") || candidates.contains("photo") ||
-                    candidates.contains("capture") || candidates.contains("picture") ||
-                    candidates.contains("snap") || candidates.contains("shoot")
-                ) {
-                    speak("Opening camera.") { handler.post { takePhoto() } }
-                } else {
-                    handler.postDelayed({ listenForPhotoCommand() }, 600)
-                }
-            }
-
-            override fun onError(error: Int) {
-                isListening = false
-                handler.postDelayed({ listenForPhotoCommand() }, 1200)
-            }
-
-            override fun onReadyForSpeech(params: Bundle?) {}
-            override fun onBeginningOfSpeech() {}
-            override fun onRmsChanged(rmsdB: Float) {}
-            override fun onBufferReceived(buffer: ByteArray?) {}
-            override fun onEndOfSpeech() {}
-            override fun onPartialResults(partialResults: Bundle?) {}
-            override fun onEvent(eventType: Int, params: Bundle?) {}
-        })
-
-        try {
-            speechRecognizer.startListening(intent)
-        } catch (e: Exception) {
-            isListening = false
-            handler.postDelayed({ listenForPhotoCommand() }, 1500)
-        }
     }
 
     private fun startLocationUpdates() {
@@ -242,15 +130,10 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
         binding.cardMetadata.visibility = View.VISIBLE
         binding.cardVoiceQuestions.visibility = View.VISIBLE
 
-        val delay = if (handsFreeMode) {
-            speak("Photo captured. Starting voice documentation.")
-            1800L
-        } else 1500L
-
         handler.postDelayed({
             if (ttsReady) startVoiceQuestions()
             else handler.postDelayed({ startVoiceQuestions() }, 1500)
-        }, delay)
+        }, 1500L)
     }
 
     private fun startVoiceQuestions() {
@@ -300,9 +183,7 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
                 showRetry()
             }
 
-            override fun onReadyForSpeech(params: Bundle?) {
-                binding.tvVoiceStatus.text = "Listening..."
-            }
+            override fun onReadyForSpeech(params: Bundle?) { binding.tvVoiceStatus.text = "Listening..." }
             override fun onBeginningOfSpeech() {}
             override fun onRmsChanged(rmsdB: Float) {}
             override fun onBufferReceived(buffer: ByteArray?) {}
@@ -320,13 +201,8 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
     }
 
     private fun showRetry() {
-        if (handsFreeMode) {
-            binding.tvVoiceStatus.text = "Listening..."
-            handler.postDelayed({ startListening() }, 200)
-        } else {
-            binding.tvVoiceStatus.text = "Didn't catch that"
-            binding.btnRetryListen.visibility = View.VISIBLE
-        }
+        binding.tvVoiceStatus.text = "Didn't catch that"
+        binding.btnRetryListen.visibility = View.VISIBLE
     }
 
     private fun handleAnswer(answer: String) {
@@ -350,73 +226,8 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
     private fun onVoiceComplete() {
         binding.tvCurrentQuestion.text = "Voice documentation complete!"
         binding.tvVoiceStatus.text = "All questions answered"
-
-        if (handsFreeMode) {
-            speak("All questions answered. Say 'save' to save, or 'cancel' to discard.") {
-                handler.post { listenForSaveCommand() }
-            }
-        } else {
-            binding.btnSave.visibility = View.VISIBLE
-            speak("Documentation complete. Press Save to store this record.")
-        }
-    }
-
-    private fun listenForSaveCommand() {
-        if (isListening) return
-        isListening = true
-        binding.tvVoiceStatus.text = "Say 'save' or 'cancel'..."
-
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-        }
-
-        speechRecognizer.setRecognitionListener(object : RecognitionListener {
-            override fun onResults(results: Bundle?) {
-                isListening = false
-                val result = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                    ?.firstOrNull()?.lowercase() ?: ""
-                when {
-                    result.contains("save") || result.contains("yes") ||
-                    result.contains("confirm") || result.contains("done") -> {
-                        saveRecord()
-                        speak("Record saved.") { handler.postDelayed({ finish() }, 1500) }
-                    }
-                    result.contains("cancel") || result.contains("no") ||
-                    result.contains("discard") -> {
-                        speak("Record discarded.") { handler.postDelayed({ finish() }, 1500) }
-                    }
-                    else -> {
-                        speak("Say 'save' to save or 'cancel' to discard.") {
-                            handler.postDelayed({ listenForSaveCommand() }, 300)
-                        }
-                    }
-                }
-            }
-
-            override fun onError(error: Int) {
-                isListening = false
-                speak("Say 'save' to save or 'cancel' to discard.") {
-                    handler.postDelayed({ listenForSaveCommand() }, 300)
-                }
-            }
-
-            override fun onReadyForSpeech(params: Bundle?) {}
-            override fun onBeginningOfSpeech() {}
-            override fun onRmsChanged(rmsdB: Float) {}
-            override fun onBufferReceived(buffer: ByteArray?) {}
-            override fun onEndOfSpeech() { binding.tvVoiceStatus.text = "Processing..." }
-            override fun onPartialResults(partialResults: Bundle?) {}
-            override fun onEvent(eventType: Int, params: Bundle?) {}
-        })
-
-        try {
-            speechRecognizer.startListening(intent)
-        } catch (e: Exception) {
-            isListening = false
-            handler.postDelayed({ listenForSaveCommand() }, 2000)
-        }
+        binding.btnSave.visibility = View.VISIBLE
+        speak("Documentation complete. Press Save to store this record.")
     }
 
     private fun saveRecord() {
@@ -434,11 +245,9 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
         if (!dir.exists()) dir.mkdirs()
         File(dir, "photo_$photoTimestamp.json").writeText(json.toString(2))
 
-        if (!handsFreeMode) {
-            Toast.makeText(this, "Record saved!", Toast.LENGTH_SHORT).show()
-            binding.btnSave.text = "Saved!"
-            binding.btnSave.isEnabled = false
-        }
+        Toast.makeText(this, "Record saved!", Toast.LENGTH_SHORT).show()
+        binding.btnSave.text = "Saved!"
+        binding.btnSave.isEnabled = false
     }
 
     private fun updateLocationDisplay() {

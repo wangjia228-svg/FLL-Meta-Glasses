@@ -33,32 +33,7 @@
             android:textStyle="bold"
             android:layout_marginStart="8dp" />
 
-        <Button
-            android:id="@+id/btnHandsFreeToggle"
-            android:layout_width="wrap_content"
-            android:layout_height="44dp"
-            android:text="&#127908; OFF"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#555555"
-            style="@style/Widget.MaterialComponents.Button" />
     </LinearLayout>
-
-    <!-- Hands-Free Active Banner -->
-    <TextView
-        android:id="@+id/tvHandsFreeBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="&#127908;  HANDS-FREE ACTIVE — Speak your note, it will be recorded automatically"
-        android:textColor="#FFFFFF"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:paddingVertical="12dp"
-        android:background="#22AA22"
-        android:letterSpacing="0.03"
-        android:visibility="gone" />
 
     <ScrollView
         android:layout_width="match_parent"
