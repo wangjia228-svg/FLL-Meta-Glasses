@@ -1,9 +1,7 @@
 package com.fll.archaeologyform
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.media.AudioManager
@@ -29,7 +27,6 @@ class QuickNoteActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var speechRecognizer: SpeechRecognizer
     private lateinit var tts: TextToSpeech
     private lateinit var audioManager: AudioManager
-    private var scoStateReceiver: BroadcastReceiver? = null
 
     private val prefs by lazy { getSharedPreferences("marp_prefs", Context.MODE_PRIVATE) }
     private var handsFreeMode = false
@@ -48,8 +45,6 @@ class QuickNoteActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         tts = TextToSpeech(this, this)
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-        initBluetoothSco()
 
         binding.btnBack.setOnClickListener { finish() }
         binding.btnRecord.setOnClickListener { if (!isListening) startListening() }
@@ -137,8 +132,8 @@ class QuickNoteActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     handleNoteResult(note)
                 } else {
                     if (handsFreeMode) {
-                        binding.tvStatus.text = "Didn't catch that, retrying..."
-                        handler.postDelayed({ startListening() }, 1000)
+                        binding.tvStatus.text = "Listening..."
+                        handler.postDelayed({ startListening() }, 200)
                     } else {
                         binding.tvStatus.text = "Didn't catch that, try again."
                     }
@@ -149,8 +144,8 @@ class QuickNoteActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 isListening = false
                 if (!handsFreeMode) binding.btnRecord.text = "Record Note"
                 if (handsFreeMode) {
-                    binding.tvStatus.text = "Retrying..."
-                    handler.postDelayed({ startListening() }, 1500)
+                    binding.tvStatus.text = "Listening..."
+                    handler.postDelayed({ startListening() }, 200)
                 } else {
                     binding.tvStatus.text = "Didn't catch that, try again."
                 }
@@ -269,21 +264,10 @@ class QuickNoteActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
-    private fun initBluetoothSco() {
-        scoStateReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {}
-        }
-        registerReceiver(scoStateReceiver, IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED))
-        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
-        @Suppress("DEPRECATION")
-        audioManager.startBluetoothSco()
-        audioManager.isBluetoothScoOn = true
-    }
-
     private fun speak(text: String, onComplete: (() -> Unit)? = null) {
         val uid = "utt_${System.currentTimeMillis()}"
         val params = Bundle().apply {
-            putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_VOICE_CALL)
+            putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_MUSIC)
         }
         if (onComplete != null) {
             tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
@@ -307,12 +291,5 @@ class QuickNoteActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         super.onDestroy()
         tts.shutdown()
         speechRecognizer.destroy()
-        try {
-            @Suppress("DEPRECATION")
-            audioManager.stopBluetoothSco()
-            audioManager.isBluetoothScoOn = false
-            audioManager.mode = AudioManager.MODE_NORMAL
-            scoStateReceiver?.let { unregisterReceiver(it) }
-        } catch (e: Exception) { /* ignore */ }
     }
 }

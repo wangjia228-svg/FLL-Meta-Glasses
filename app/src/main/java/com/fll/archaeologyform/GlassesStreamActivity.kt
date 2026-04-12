@@ -17,7 +17,9 @@ import com.meta.wearable.dat.core.selectors.AutoDeviceSelector
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class GlassesStreamActivity : AppCompatActivity() {
+class GlassesStreamActivity : HandsFreeActivity() {
+
+    override val screenName = "Glasses stream"
 
     private lateinit var binding: ActivityGlassesStreamBinding
 

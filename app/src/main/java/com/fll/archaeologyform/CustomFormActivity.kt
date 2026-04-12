@@ -18,7 +18,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
-class CustomFormActivity : AppCompatActivity() {
+class CustomFormActivity : HandsFreeActivity() {
+
+    override val screenName = "Custom form"
 
     private lateinit var binding: ActivityCustomFormBinding
     private data class FormField(val label: String, val description: String, val type: String)

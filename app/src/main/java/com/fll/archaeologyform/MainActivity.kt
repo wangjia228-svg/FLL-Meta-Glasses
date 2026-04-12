@@ -1,10 +1,8 @@
 package com.fll.archaeologyform
 
 import android.Manifest
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
@@ -66,7 +64,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private val prefs by lazy { getSharedPreferences("marp_prefs", Context.MODE_PRIVATE) }
     private var handsFreeMode = false
 
-    private var scoStateReceiver: BroadcastReceiver? = null
     private var currentLocation: Location? = null
 
     private val responses = mutableMapOf<String, String>()
@@ -82,9 +79,22 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var streamSession: com.meta.wearable.dat.camera.StreamSession? = null
     private var streamStateJob: Job? = null
     private var videoStreamJob: Job? = null
+    private var currentStreamState: StreamSessionState? = null
 
     private val handler = Handler(Looper.getMainLooper())
     private val listenForPhotoRunnable = Runnable { listenForPhotoCommand() }
+
+    // Silence-based finalization for field answers.
+    // onEndOfSpeech starts the 4.5s timer; onBeginningOfSpeech cancels it.
+    // onResults saves the best answer and restarts immediately so the user can
+    // keep talking. The timer fires 4.5s after the last word and accepts the answer.
+    private var pendingAnswer = ""
+    private val acceptAnswerRunnable = Runnable {
+        val answer = pendingAnswer
+        pendingAnswer = ""
+        if (answer.isNotEmpty()) handleAnswer(answer)
+        else showRetry()
+    }
 
     // Camera permission via SDK
     private var permissionContinuation: CancellableContinuation<PermissionStatus>? = null
@@ -140,7 +150,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         handsFreeMode = prefs.getBoolean("hands_free_mode", false)
         customFields = loadCustomTemplate()
 
-        if (handsFreeMode && !prefs.getBoolean("phone_audio_mode", false)) initBluetoothSco()
         startLocationUpdates()
 
         binding.btnBack.setOnClickListener { finish() }
@@ -173,13 +182,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         prefs.edit().putBoolean("hands_free_mode", handsFreeMode).apply()
         applyHandsFreeUI()
         if (handsFreeMode) {
-            if (!prefs.getBoolean("phone_audio_mode", false)) initBluetoothSco()
             speak("Hands-free mode on.")
-        } else {
-            @Suppress("DEPRECATION")
-            audioManager.stopBluetoothSco()
-            audioManager.isBluetoothScoOn = false
-            audioManager.mode = AudioManager.MODE_NORMAL
         }
     }
 
@@ -241,20 +244,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 }
             }
         }
-    }
-
-    private fun initBluetoothSco() {
-        scoStateReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)
-                Log.d("MARP", "SCO state: $state")
-            }
-        }
-        registerReceiver(scoStateReceiver, IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED))
-        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
-        @Suppress("DEPRECATION")
-        audioManager.startBluetoothSco()
-        audioManager.isBluetoothScoOn = true
     }
 
     private fun startLocationUpdates() {
@@ -331,7 +320,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         if (streamSession != null) return
 
         binding.tvPhotoStatus.text = "Starting camera..."
-        
+        currentStreamState = null
+
         try {
             val session = Wearables.startStreamSession(
                 this,
@@ -340,22 +330,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             )
             streamSession = session
 
-            // Required handshake collection
             videoStreamJob = lifecycleScope.launch(Dispatchers.Default) {
                 session.videoStream.collect { }
             }
 
-            // Enable button after brief warmup (default mode only)
-            handler.postDelayed({
-                if (streamSession != null && !photoTaken && customFields == null) {
-                    binding.btnTakePhoto.isEnabled = true
-                    binding.tvPhotoStatus.text = "Camera ready"
-                }
-            }, 2500)
-
-            // Monitor state for immediate readiness (default mode only)
+            // Only enable the button once the session is confirmed STREAMING
             streamStateJob = lifecycleScope.launch {
                 session.state.collect { state ->
+                    currentStreamState = state
                     if (state == StreamSessionState.STREAMING && customFields == null) {
                         binding.tvPhotoStatus.text = "Camera ready"
                         binding.btnTakePhoto.isEnabled = true
@@ -369,8 +351,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun startStreamForTemplatePhoto() {
-        binding.tvPhotoStatus.text = "Starting camera..."
         binding.btnTakePhoto.isEnabled = false
+
+        // Reuse the existing session if it's already streaming — avoids the rapid
+        // close/reopen cycle that corrupts the glasses camera state
+        if (streamSession != null && currentStreamState == StreamSessionState.STREAMING) {
+            binding.tvPhotoStatus.text = "Camera ready — tap to capture"
+            binding.btnTakePhoto.isEnabled = true
+            return
+        }
+
+        binding.tvPhotoStatus.text = "Starting camera..."
+        currentStreamState = null
         try {
             val session = Wearables.startStreamSession(
                 this, AutoDeviceSelector(), StreamConfiguration(VideoQuality.MEDIUM, 24)
@@ -379,14 +371,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             videoStreamJob = lifecycleScope.launch(Dispatchers.Default) {
                 session.videoStream.collect { }
             }
-            handler.postDelayed({
-                if (streamSession != null) {
-                    binding.btnTakePhoto.isEnabled = true
-                    binding.tvPhotoStatus.text = "Camera ready — tap to capture"
-                }
-            }, 2500)
+            // Only enable once confirmed STREAMING — no time-based fallback
             streamStateJob = lifecycleScope.launch {
                 session.state.collect { state ->
+                    currentStreamState = state
                     if (state == StreamSessionState.STREAMING) {
                         binding.tvPhotoStatus.text = "Camera ready — tap to capture"
                         binding.btnTakePhoto.isEnabled = true
@@ -395,7 +383,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
         } catch (e: Exception) {
             Log.e("MARP", "Stream error", e)
-            binding.tvPhotoStatus.text = "Camera failed"
+            binding.tvPhotoStatus.text = "Camera failed — try again"
             binding.btnTakePhoto.isEnabled = true
         }
     }
@@ -403,6 +391,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun takePhoto() {
         val session = streamSession ?: return
         if (photoTaken || photoInProgress) return
+
+        // Don't attempt capture unless the session is confirmed streaming
+        if (currentStreamState != StreamSessionState.STREAMING) {
+            binding.tvPhotoStatus.text = "Camera not ready yet..."
+            return
+        }
 
         photoInProgress = true
         binding.btnTakePhoto.isEnabled = false
@@ -449,9 +443,17 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     Log.e("MARP", "Capture failed: $error")
                     photoInProgress = false
                     binding.btnTakePhoto.isEnabled = true
-                    binding.tvPhotoStatus.text = "Capture failed"
+                    binding.tvPhotoStatus.text = "Capture failed — restart glasses if it keeps happening"
                 }
         }
+    }
+
+    private fun closeStream() {
+        streamStateJob?.cancel()
+        videoStreamJob?.cancel()
+        try { streamSession?.close() } catch (_: Exception) {}
+        streamSession = null
+        currentStreamState = null
     }
 
     private fun onPhotoTaken() {
@@ -464,12 +466,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.layoutMetadata.visibility = View.VISIBLE
 
         if (photoForTemplateQuestion) {
-            // Photo captured for a template question — record, close stream, advance
             photoForTemplateQuestion = false
-            streamStateJob?.cancel(); streamStateJob = null
-            videoStreamJob?.cancel(); videoStreamJob = null
-            try { streamSession?.close() } catch (_: Exception) { }
-            streamSession = null
             val fields = customFields ?: return
             responses[fields[currentQuestionIndex].label] = photoFile?.absolutePath ?: ""
             binding.cardFieldNotes.visibility = View.VISIBLE
@@ -477,11 +474,17 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 "${it.key.uppercase()}:\n  ${it.value}"
             }
             currentQuestionIndex++
+            // Close stream now if no more photo questions remain — prevents the
+            // glasses from announcing "Video is paused" randomly during voice questions
+            val remainingHasPhoto = fields.drop(currentQuestionIndex).any { it.type == "photo" }
+            if (!remainingHasPhoto) closeStream()
             speak("Photo captured.") { handler.postDelayed({ askNextQuestion() }, 300) }
             return
         }
 
-        // Default flow: initial photo taken, start voice questions
+        // Default flow: photo taken, stream no longer needed — close it now so the
+        // glasses don't announce "Video is paused" during voice questions
+        closeStream()
         photoTaken = true
         binding.tvPhotoStatus.text = "Photo captured"
         if (handsFreeMode) {
@@ -502,6 +505,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+            // Hold the session open for up to 2 minutes so it doesn't time out
+            // while the user is deciding when to take the photo
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 120000L)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 30000L)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 20000L)
         }
 
         speechRecognizer.setRecognitionListener(object : RecognitionListener {
@@ -509,18 +517,21 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 isListening = false
                 val heard = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     ?.joinToString(" ")?.lowercase() ?: ""
-                if (heard.contains("take") || heard.contains("photo") ||
+                when {
+                    HandsFreeActivity.isHomeCommand(heard) ->
+                        speak("Going home.") { handler.postDelayed({ finish() }, 800) }
+                    heard.contains("take") || heard.contains("photo") ||
                     heard.contains("capture") || heard.contains("picture") ||
-                    heard.contains("snap")
-                ) {
-                    speak("Taking photo.") { handler.post { takePhoto() } }
-                } else {
-                    handler.postDelayed(listenForPhotoRunnable, 600)
+                    heard.contains("snap") ->
+                        speak("Taking photo.") { handler.post { takePhoto() } }
+                    else ->
+                        handler.post(listenForPhotoRunnable)
                 }
             }
             override fun onError(error: Int) {
                 isListening = false
-                handler.postDelayed(listenForPhotoRunnable, 1200)
+                // Session timed out (very rare with 2-min minimum) — restart immediately
+                handler.post(listenForPhotoRunnable)
             }
             override fun onReadyForSpeech(params: Bundle?) {}
             override fun onBeginningOfSpeech() {}
@@ -535,7 +546,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             speechRecognizer.startListening(intent)
         } catch (e: Exception) {
             isListening = false
-            handler.postDelayed(listenForPhotoRunnable, 1500)
+            handler.post(listenForPhotoRunnable)
         }
     }
 
@@ -635,18 +646,49 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 isListening = false
                 val answer = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     ?.firstOrNull() ?: ""
-                if (answer.isNotEmpty()) handleAnswer(answer)
-                else showRetry()
+                val scores = results?.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES)
+                val topScore = scores?.firstOrNull() ?: 1f
+
+                if (HandsFreeActivity.isHomeCommand(answer.lowercase())) {
+                    handler.removeCallbacks(acceptAnswerRunnable)
+                    pendingAnswer = ""
+                    speak("Going home.") { handler.postDelayed({ finish() }, 800) }
+                    return
+                }
+
+                // Save best confident result, then restart immediately.
+                // acceptAnswerRunnable (started by onEndOfSpeech) will fire 4.5s
+                // after the last word and call handleAnswer with whatever we saved.
+                if (answer.isNotEmpty() && topScore >= 0.45f) {
+                    pendingAnswer = answer
+                }
+                handler.post { startListening() }
             }
+
             override fun onError(error: Int) {
                 isListening = false
-                showRetry()
+                // No speech in this restart session — timer will fire when ready.
+                // If no pending answer either, give up and show retry.
+                if (pendingAnswer.isEmpty()) {
+                    handler.removeCallbacks(acceptAnswerRunnable)
+                    showRetry()
+                }
             }
+
+            override fun onBeginningOfSpeech() {
+                // User started speaking again — cancel the timer
+                handler.removeCallbacks(acceptAnswerRunnable)
+            }
+
+            override fun onEndOfSpeech() {
+                // Start 4.5s countdown from the last word
+                handler.removeCallbacks(acceptAnswerRunnable)
+                handler.postDelayed(acceptAnswerRunnable, 4500L)
+            }
+
             override fun onReadyForSpeech(params: Bundle?) { binding.tvVoiceStatus.text = "Listening..." }
-            override fun onBeginningOfSpeech() {}
             override fun onRmsChanged(rmsdB: Float) {}
             override fun onBufferReceived(buffer: ByteArray?) {}
-            override fun onEndOfSpeech() { binding.tvVoiceStatus.text = "Processing..." }
             override fun onPartialResults(partialResults: Bundle?) {}
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
@@ -655,21 +697,19 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             speechRecognizer.startListening(intent)
         } catch (e: Exception) {
             isListening = false
-            showRetry()
+            if (pendingAnswer.isEmpty()) showRetry()
         }
     }
 
     private fun showRetry() {
-        if (handsFreeMode) {
-            binding.tvVoiceStatus.text = "Retrying..."
-            handler.postDelayed({ startListening() }, 1500)
-        } else {
-            binding.tvVoiceStatus.text = "Didn't catch that"
-            binding.btnRetryListen.visibility = View.VISIBLE
-        }
+        pendingAnswer = ""
+        binding.tvVoiceStatus.text = "Listening..."
+        handler.postDelayed({ startListening() }, 200)
     }
 
     private fun handleAnswer(answer: String) {
+        handler.removeCallbacks(acceptAnswerRunnable)
+        pendingAnswer = ""
         val fields = customFields
         if (fields != null) {
             val field = fields[currentQuestionIndex]
@@ -705,7 +745,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.tvStepIndicator.text = "Ready to save"
         binding.btnSaveRecord.visibility = View.VISIBLE
         if (handsFreeMode) {
-            speak("All questions answered. What would you like to name this record? Say skip to leave it unnamed.") {
+            speak("All questions answered. What would you like to name this record? Say skip to save without a name.") {
                 handler.post { listenForRecordName() }
             }
         } else {
@@ -729,17 +769,21 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 isListening = false
                 val heard = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     ?.firstOrNull()?.trim() ?: ""
+                if (HandsFreeActivity.isHomeCommand(heard.lowercase())) {
+                    speak("Going home.") { handler.postDelayed({ finish() }, 800) }
+                    return
+                }
                 recordName = if (heard.lowercase() == "skip" || heard.isEmpty()) "" else heard
-                val confirmation = if (recordName.isEmpty()) "No name. Say save to save, or cancel to discard."
-                    else "Name set to $recordName. Say save to save, or cancel to discard."
-                speak(confirmation) { handler.postDelayed({ listenForSaveCommand() }, 300) }
+                val confirmation = if (recordName.isEmpty()) "Saving without a name."
+                    else "Saving as $recordName."
+                saveRecord()
+                speak(confirmation) { handler.postDelayed({ finish() }, 1200) }
             }
             override fun onError(error: Int) {
                 isListening = false
                 recordName = ""
-                speak("Say save to save, or cancel to discard.") {
-                    handler.postDelayed({ listenForSaveCommand() }, 300)
-                }
+                saveRecord()
+                speak("Saving.") { handler.postDelayed({ finish() }, 1200) }
             }
             override fun onReadyForSpeech(params: Bundle?) {}
             override fun onBeginningOfSpeech() {}
@@ -755,7 +799,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         } catch (e: Exception) {
             isListening = false
             recordName = ""
-            handler.postDelayed({ listenForSaveCommand() }, 1500)
+            saveRecord()
+            handler.postDelayed({ finish() }, 1000)
         }
     }
 
@@ -887,10 +932,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             return
         }
         val uid = "utt_${System.currentTimeMillis()}"
-        val phoneAudio = prefs.getBoolean("phone_audio_mode", false)
-        val stream = if (phoneAudio) AudioManager.STREAM_MUSIC else AudioManager.STREAM_VOICE_CALL
         val params = Bundle().apply {
-            putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, stream)
+            putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_MUSIC)
         }
         tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {}
@@ -915,7 +958,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 noPhotoTemplate -> handler.postDelayed({ startQuestionsFlow() }, 300)
                 handsFreeMode && isRegistered -> {
                     handler.removeCallbacks(listenForPhotoRunnable)
-                    speak("Say take photo to begin.") {
+                    speak("Field form. Say take photo to begin.") {
                         handler.postDelayed(listenForPhotoRunnable, 300)
                     }
                 }
@@ -928,18 +971,9 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
+        pendingAnswer = ""
         speechRecognizer.cancel()
-        streamStateJob?.cancel()
-        videoStreamJob?.cancel()
-        try { streamSession?.close() } catch (_: Exception) { }
-        streamSession = null
-        try {
-            @Suppress("DEPRECATION")
-            audioManager.stopBluetoothSco()
-            audioManager.isBluetoothScoOn = false
-            audioManager.mode = AudioManager.MODE_NORMAL
-            scoStateReceiver?.let { unregisterReceiver(it) }
-        } catch (e: Exception) { /* ignore */ }
+        closeStream()
 
         try {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)

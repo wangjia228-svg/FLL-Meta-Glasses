@@ -7,7 +7,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.fll.archaeologyform.databinding.ActivitySettingsBinding
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : HandsFreeActivity() {
+
+    override val screenName = "Settings"
 
     private lateinit var binding: ActivitySettingsBinding
     private val prefs by lazy { getSharedPreferences("marp_prefs", Context.MODE_PRIVATE) }

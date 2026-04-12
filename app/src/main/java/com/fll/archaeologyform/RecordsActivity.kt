@@ -11,7 +11,9 @@ import com.fll.archaeologyform.databinding.ActivityRecordsBinding
 import org.json.JSONObject
 import java.io.File
 
-class RecordsActivity : AppCompatActivity() {
+class RecordsActivity : HandsFreeActivity() {
+
+    override val screenName = "Records"
 
     private lateinit var binding: ActivityRecordsBinding
 
