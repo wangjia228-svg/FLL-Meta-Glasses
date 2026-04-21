@@ -132,8 +132,8 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
 
         handler.postDelayed({
             if (ttsReady) startVoiceQuestions()
-            else handler.postDelayed({ startVoiceQuestions() }, 1500)
-        }, 1500L)
+            else handler.postDelayed({ startVoiceQuestions() }, 500)
+        }, 500L)
     }
 
     private fun startVoiceQuestions() {
@@ -154,7 +154,7 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
         binding.btnRetryListen.visibility = View.GONE
 
         speak(questionText) {
-            handler.postDelayed({ startListening() }, 400)
+            handler.postDelayed({ startListening() }, 100)
         }
     }
 
@@ -164,7 +164,7 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
         binding.tvVoiceStatus.text = "Listening..."
 
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
         }
@@ -213,7 +213,7 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
 
         speak("Got it.") {
             currentQuestionIndex++
-            handler.postDelayed({ askNextQuestion() }, 300)
+            handler.postDelayed({ askNextQuestion() }, 100)
         }
     }
 
@@ -276,7 +276,8 @@ class PhotoDocumentationActivity : AppCompatActivity(), TextToSpeech.OnInitListe
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             tts.language = Locale.US
-            tts.setSpeechRate(1.1f)
+            tts.setSpeechRate(1.0f)
+            tts.setPitch(1.0f)
             ttsReady = true
         }
     }

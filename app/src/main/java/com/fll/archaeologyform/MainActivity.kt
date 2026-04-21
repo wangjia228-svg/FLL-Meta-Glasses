@@ -80,6 +80,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var streamStateJob: Job? = null
     private var videoStreamJob: Job? = null
     private var currentStreamState: StreamSessionState? = null
+    private var streamReadyForPhoto = false
 
     private val handler = Handler(Looper.getMainLooper())
     private val listenForPhotoRunnable = Runnable { listenForPhotoCommand() }
@@ -334,9 +335,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             // Fallback: enable button after 2.5s even if STREAMING state isn't confirmed
             handler.postDelayed({
                 if (streamSession != null && !photoTaken && customFields == null) {
-                    binding.btnTakePhoto.isEnabled = true
+                    streamReadyForPhoto = true
                     binding.tvPhotoStatus.text = "Camera ready"
-                    if (handsFreeMode && !isListening) handler.postDelayed(listenForPhotoRunnable, 300)
+                    if (!tts.isSpeaking) {
+                        binding.btnTakePhoto.isEnabled = true
+                        if (handsFreeMode && !isListening) handler.postDelayed(listenForPhotoRunnable, 300)
+                    }
                 }
             }, 2500)
 
@@ -344,9 +348,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 session.state.collect { state ->
                     currentStreamState = state
                     if (state == StreamSessionState.STREAMING && customFields == null) {
+                        streamReadyForPhoto = true
                         binding.tvPhotoStatus.text = "Camera ready"
-                        binding.btnTakePhoto.isEnabled = true
-                        if (handsFreeMode && !isListening) handler.postDelayed(listenForPhotoRunnable, 300)
+                        if (!tts.isSpeaking) {
+                            binding.btnTakePhoto.isEnabled = true
+                            if (handsFreeMode && !isListening) handler.postDelayed(listenForPhotoRunnable, 300)
+                        }
                     }
                 }
             }
@@ -496,7 +503,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             // glasses from announcing "Video is paused" randomly during voice questions
             val remainingHasPhoto = fields.drop(currentQuestionIndex).any { it.type == "photo" }
             if (!remainingHasPhoto) closeStream()
-            speak("Photo captured.") { handler.postDelayed({ askNextQuestion() }, 300) }
+            handler.postDelayed({ speak("Photo captured.") { handler.post { askNextQuestion() } } }, 200)
             return
         }
 
@@ -506,9 +513,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         photoTaken = true
         binding.tvPhotoStatus.text = "Photo captured"
         if (handsFreeMode) {
-            speak("Photo captured. Starting field documentation.") {
-                handler.postDelayed({ startQuestionsFlow() }, 400)
-            }
+            handler.postDelayed({
+                speak("Photo captured. Starting field documentation.") {
+                    handler.postDelayed({ startQuestionsFlow() }, 500)
+                }
+            }, 200)
         } else {
             startQuestionsFlow()
         }
@@ -541,7 +550,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     heard.contains("take") || heard.contains("photo") ||
                     heard.contains("capture") || heard.contains("picture") ||
                     heard.contains("snap") ->
-                        speak("Taking photo.") { handler.post { takePhoto() } }
+                        handler.postDelayed({ speak("Taking photo.") { handler.post { takePhoto() } } }, 200)
                     else ->
                         if (handsFreeMode) handler.post(listenForPhotoRunnable)
                 }
@@ -583,7 +592,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         responses.clear()
         binding.tvFieldNotes.text = ""
         binding.tvStepIndicator.text = "Questions"
-        askNextQuestion()
+        handler.postDelayed({ askNextQuestion() }, 500)
     }
 
     private fun askNextQuestion() {
@@ -638,13 +647,13 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         startStreamForTemplatePhoto()
                     }
                 }
-                else -> speak(spoken) { handler.postDelayed({ startListening() }, 800) }
+                else -> speak(spoken) { handler.postDelayed({ startListening() }, 50) }
             }
         } else {
             val (_, questionText) = questions[currentQuestionIndex]
             binding.tvCurrentQuestion.text = questionText
             binding.tvQuestionDescription.visibility = View.GONE
-            speak(questionText) { handler.postDelayed({ startListening() }, 800) }
+            speak(questionText) { handler.postDelayed({ startListening() }, 50) }
         }
     }
 
@@ -654,13 +663,13 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.tvVoiceStatus.text = "Listening..."
 
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
             // Hold the session open as long as Android allows before timing out
             putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 120000L)
             putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 10000L)
-            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 8000L)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L)
         }
 
         speechRecognizer.setRecognitionListener(object : RecognitionListener {
@@ -702,8 +711,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     private fun handleAnswer(answer: String) {
-        // Stop the recognizer before TTS speaks so it doesn't record "Got it." as the next answer
-        speechRecognizer.stopListening()
+        // Cancel (not just stop) so audio focus is released before TTS starts, preventing "Got it." from being quiet
+        speechRecognizer.cancel()
         isListening = false
         val fields = customFields
         if (fields != null) {
@@ -714,7 +723,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     .replace("\\s".toRegex(), "")
             } else answer
             if (field.type == "number" && storedAnswer.toDoubleOrNull() == null) {
-                speak("Please say a number.") { handler.postDelayed({ startListening() }, 800) }
+                speak("Please say a number.") { handler.post { startListening() } }
                 return
             }
             responses[field.label] = storedAnswer
@@ -729,7 +738,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
 
         currentQuestionIndex++
-        speak("Got it.") { handler.postDelayed({ askNextQuestion() }, 300) }
+        speak("Got it.") { handler.post { askNextQuestion() } }
     }
 
     private fun onVoiceComplete() {
@@ -969,14 +978,16 @@ val uid = "utt_${System.currentTimeMillis()}"
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             tts.language = Locale.US
-            tts.setSpeechRate(1.1f)
+            tts.setSpeechRate(1.2f)
+            tts.setPitch(1.0f)
             ttsReady = true
             val noPhotoTemplate = customFields != null && customFields!!.none { it.type == "photo" }
             when {
                 noPhotoTemplate -> handler.postDelayed({ startQuestionsFlow() }, 300)
                 handsFreeMode && isRegistered -> {
                     handler.removeCallbacks(listenForPhotoRunnable)
-                    speak("Field form. Say take photo to begin.") {
+                    speak("Say take photo to begin.") {
+                        if (streamReadyForPhoto) binding.btnTakePhoto.isEnabled = true
                         handler.postDelayed(listenForPhotoRunnable, 300)
                     }
                 }
