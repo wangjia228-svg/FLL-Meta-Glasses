@@ -54,9 +54,9 @@ abstract class HandsFreeActivity : AppCompatActivity(), TextToSpeech.OnInitListe
         isFirstListen = true  // reset so the ready-beep fires once on each screen visit
         if (handsFreeMode) {
             if (ttsReady) {
-                speak(screenName) { handler.postDelayed({ startBackgroundListening() }, 300) }
+                speak(screenName) { startBackgroundListening() }
             } else {
-                handler.postDelayed({ startBackgroundListening() }, 800)
+                handler.postDelayed({ startBackgroundListening() }, 500)
             }
         }
     }
@@ -123,7 +123,7 @@ abstract class HandsFreeActivity : AppCompatActivity(), TextToSpeech.OnInitListe
                     homeDetected = true
                     isListening = false
                     try { speechRecognizer.stopListening() } catch (_: Exception) {}
-                    speak("Going home.") { handler.postDelayed({ finish() }, 800) }
+                    speak("Going home.") { finish() }
                 }
             }
 
@@ -135,7 +135,7 @@ abstract class HandsFreeActivity : AppCompatActivity(), TextToSpeech.OnInitListe
                 val text = texts?.firstOrNull()?.lowercase() ?: ""
                 val topScore = scores?.firstOrNull() ?: 1f
                 if (topScore >= 0.5f && isHomeCommand(text)) {
-                    speak("Going home.") { handler.postDelayed({ finish() }, 800) }
+                    speak("Going home.") { finish() }
                 } else {
                     handler.post { startBackgroundListening() }
                 }
@@ -182,14 +182,16 @@ abstract class HandsFreeActivity : AppCompatActivity(), TextToSpeech.OnInitListe
         val params = Bundle().apply {
             putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_MUSIC)
         }
-        if (onComplete != null) {
-            tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                override fun onStart(utteranceId: String?) {}
-                override fun onDone(utteranceId: String?) { handler.post { onComplete() } }
-                @Deprecated("Deprecated in Java")
-                override fun onError(utteranceId: String?) { handler.post { onComplete() } }
-            })
-        }
+        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {}
+            override fun onDone(utteranceId: String?) {
+                if (utteranceId == uid) handler.post { onComplete?.invoke() }
+            }
+            @Deprecated("Deprecated in Java")
+            override fun onError(utteranceId: String?) {
+                if (utteranceId == uid) handler.post { onComplete?.invoke() }
+            }
+        })
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, params, uid)
     }
 

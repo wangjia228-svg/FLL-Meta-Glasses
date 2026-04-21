@@ -343,7 +343,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     binding.tvPhotoStatus.text = "Camera ready"
                     if (!tts.isSpeaking) {
                         binding.btnTakePhoto.isEnabled = true
-                        if (handsFreeMode && !isListening) handler.postDelayed(listenForPhotoRunnable, 300)
+                        if (handsFreeMode && !isListening) handler.post(listenForPhotoRunnable)
                     }
                 }
             }, 2500)
@@ -356,7 +356,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         binding.tvPhotoStatus.text = "Camera ready"
                         if (!tts.isSpeaking) {
                             binding.btnTakePhoto.isEnabled = true
-                            if (handsFreeMode && !isListening) handler.postDelayed(listenForPhotoRunnable, 300)
+                            if (handsFreeMode && !isListening) handler.post(listenForPhotoRunnable)
                         }
                     }
                 }
@@ -374,7 +374,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         if (streamSession != null && currentStreamState == StreamSessionState.STREAMING) {
             binding.tvPhotoStatus.text = "Camera ready — tap to capture"
             binding.btnTakePhoto.isEnabled = true
-            if (handsFreeMode) handler.postDelayed({ listenForPhotoCommand() }, 300)
+            if (handsFreeMode) handler.post { listenForPhotoCommand() }
             return
         }
 
@@ -401,7 +401,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 if (streamSession != null) {
                     binding.btnTakePhoto.isEnabled = true
                     binding.tvPhotoStatus.text = "Camera ready — tap to capture"
-                    if (handsFreeMode) handler.postDelayed({ listenForPhotoCommand() }, 300)
+                    if (handsFreeMode) handler.post { listenForPhotoCommand() }
                 }
             }, 2500)
 
@@ -412,7 +412,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     if (state == StreamSessionState.STREAMING) {
                         binding.tvPhotoStatus.text = "Camera ready — tap to capture"
                         binding.btnTakePhoto.isEnabled = true
-                        if (handsFreeMode) handler.postDelayed({ listenForPhotoCommand() }, 300)
+                        if (handsFreeMode) handler.post { listenForPhotoCommand() }
                     }
                 }
             }
@@ -507,7 +507,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             // glasses from announcing "Video is paused" randomly during voice questions
             val remainingHasPhoto = fields.drop(currentQuestionIndex).any { it.type == "photo" }
             if (!remainingHasPhoto) closeStream()
-            handler.postDelayed({ speak("Photo captured.") { handler.post { askNextQuestion() } } }, 200)
+            speak("Photo captured.") { askNextQuestion() }
             return
         }
 
@@ -517,11 +517,9 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         photoTaken = true
         binding.tvPhotoStatus.text = "Photo captured"
         if (handsFreeMode) {
-            handler.postDelayed({
-                speak("Photo captured. Starting field documentation.") {
-                    handler.postDelayed({ startQuestionsFlow() }, 500)
-                }
-            }, 200)
+            speak("Photo captured. Starting field documentation.") {
+                startQuestionsFlow()
+            }
         } else {
             startQuestionsFlow()
         }
@@ -550,11 +548,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     ?.joinToString(" ")?.lowercase() ?: ""
                 when {
                     HandsFreeActivity.isHomeCommand(heard) ->
-                        speak("Going home.") { handler.postDelayed({ finish() }, 800) }
+                        speak("Going home.") { finish() }
                     heard.contains("take") || heard.contains("photo") ||
                     heard.contains("capture") || heard.contains("picture") ||
                     heard.contains("snap") ->
-                        handler.postDelayed({ speak("Taking photo.") { handler.post { takePhoto() } } }, 200)
+                        speak("Taking photo.") { takePhoto() }
                     else ->
                         if (handsFreeMode) handler.post(listenForPhotoRunnable)
                 }
@@ -591,7 +589,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         responses.clear()
         binding.tvFieldNotes.text = ""
         binding.tvStepIndicator.text = "Questions"
-        handler.postDelayed({ askNextQuestion() }, 500)
+        handler.post { askNextQuestion() }
     }
 
     private fun askNextQuestion() {
@@ -646,13 +644,13 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         startStreamForTemplatePhoto()
                     }
                 }
-                else -> speak(spoken) { handler.postDelayed({ startListening() }, 50) }
+                else -> speak(spoken) { startListening() }
             }
         } else {
             val (_, questionText) = questions[currentQuestionIndex]
             binding.tvCurrentQuestion.text = questionText
             binding.tvQuestionDescription.visibility = View.GONE
-            speak(questionText) { handler.postDelayed({ startListening() }, 50) }
+            speak(questionText) { startListening() }
         }
     }
 
@@ -678,7 +676,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     ?.firstOrNull() ?: ""
 
                 if (HandsFreeActivity.isHomeCommand(answer.lowercase())) {
-                    speak("Going home.") { handler.postDelayed({ finish() }, 800) }
+                    speak("Going home.") { finish() }
                     return
                 }
 
@@ -745,7 +743,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         binding.btnSaveRecord.visibility = View.VISIBLE
         if (handsFreeMode) {
             speak("All questions answered. What would you like to name this record? Say skip to save without a name.") {
-                handler.postDelayed({ listenForRecordName() }, 800)
+                listenForRecordName()
             }
         } else {
             speak("Documentation complete. Press Save when ready.")
@@ -772,19 +770,19 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 val heard = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     ?.firstOrNull()?.trim() ?: ""
                 if (HandsFreeActivity.isHomeCommand(heard.lowercase())) {
-                    speak("Going home.") { handler.postDelayed({ finish() }, 800) }
+                    speak("Going home.") { finish() }
                     return
                 }
                 recordName = if (heard.lowercase() == "skip" || heard.isEmpty()) "" else heard
                 val confirmation = if (recordName.isEmpty()) "Saving without a name."
                     else "Saving as $recordName."
                 saveRecord()
-                speak(confirmation) { handler.postDelayed({ finish() }, 1200) }
+                speak(confirmation) { finish() }
             }
             override fun onError(error: Int) {
                 isListening = false
                 // Silently retry — don't auto-save with no name
-                handler.postDelayed({ listenForRecordName() }, 200)
+                handler.post { listenForRecordName() }
             }
             override fun onReadyForSpeech(params: Bundle?) {}
             override fun onBeginningOfSpeech() {}
@@ -795,7 +793,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
 
-        launchRecognition(intent) { handler.postDelayed({ listenForRecordName() }, 500) }
+        launchRecognition(intent) { handler.postDelayed({ listenForRecordName() }, 300) }
     }
 
     private fun listenForSaveCommand() {
@@ -818,15 +816,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     result.contains("save") || result.contains("yes") ||
                     result.contains("confirm") || result.contains("done") -> {
                         saveRecord()
-                        speak("Record saved.") { handler.postDelayed({ finish() }, 1500) }
+                        speak("Record saved.") { finish() }
                     }
                     result.contains("cancel") || result.contains("no") ||
                     result.contains("discard") -> {
-                        speak("Record discarded.") { handler.postDelayed({ finish() }, 1500) }
+                        speak("Record discarded.") { finish() }
                     }
                     else -> {
                         speak("Say save to save or cancel to discard.") {
-                            handler.postDelayed({ listenForSaveCommand() }, 300)
+                            listenForSaveCommand()
                         }
                     }
                 }
@@ -834,7 +832,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             override fun onError(error: Int) {
                 isListening = false
                 speak("Say save to save or cancel to discard.") {
-                    handler.postDelayed({ listenForSaveCommand() }, 300)
+                    listenForSaveCommand()
                 }
             }
             override fun onReadyForSpeech(params: Bundle?) {}
@@ -846,7 +844,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
 
-        launchRecognition(intent) { handler.postDelayed({ listenForSaveCommand() }, 2000) }
+        launchRecognition(intent) { handler.postDelayed({ listenForSaveCommand() }, 500) }
     }
 
     private fun showNameDialogThenSave() {
@@ -932,7 +930,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
             audioManager.isSpeakerphoneOn = true
         }
-val uid = "utt_${System.currentTimeMillis()}"
+        val uid = "utt_${System.currentTimeMillis()}"
         val params = Bundle().apply { putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, stream) }
         tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {}
@@ -967,12 +965,12 @@ val uid = "utt_${System.currentTimeMillis()}"
             ttsReady = true
             val noPhotoTemplate = customFields != null && customFields!!.none { it.type == "photo" }
             when {
-                noPhotoTemplate -> handler.postDelayed({ startQuestionsFlow() }, 300)
+                noPhotoTemplate -> startQuestionsFlow()
                 handsFreeMode && isRegistered -> {
                     handler.removeCallbacks(listenForPhotoRunnable)
                     speak("Say take photo to begin.") {
                         if (streamReadyForPhoto) binding.btnTakePhoto.isEnabled = true
-                        handler.postDelayed(listenForPhotoRunnable, 300)
+                        handler.post(listenForPhotoRunnable)
                     }
                 }
             }
