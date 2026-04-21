@@ -82,6 +82,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var currentStreamState: StreamSessionState? = null
     private var streamReadyForPhoto = false
 
+    private var scoConnected = false
+    private var scoReceiver: android.content.BroadcastReceiver? = null
+    private var pendingSpeechStart: (() -> Unit)? = null
+
     private val handler = Handler(Looper.getMainLooper())
     private val listenForPhotoRunnable = Runnable { listenForPhotoCommand() }
 
@@ -569,12 +573,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
 
-        try {
-            speechRecognizer.startListening(intent)
-        } catch (e: Exception) {
-            isListening = false
-            if (handsFreeMode) handler.post(listenForPhotoRunnable)
-        }
+        launchRecognition(intent) { if (handsFreeMode) handler.post(listenForPhotoRunnable) }
     }
 
     private fun startQuestionsFlow() {
@@ -702,12 +701,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
 
-        try {
-            speechRecognizer.startListening(intent)
-        } catch (e: Exception) {
-            isListening = false
-            handler.postDelayed({ startListening() }, 500)
-        }
+        launchRecognition(intent) { handler.postDelayed({ startListening() }, 500) }
     }
 
     private fun handleAnswer(answer: String) {
@@ -801,12 +795,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
 
-        try {
-            speechRecognizer.startListening(intent)
-        } catch (e: Exception) {
-            isListening = false
-            handler.postDelayed({ listenForRecordName() }, 500)
-        }
+        launchRecognition(intent) { handler.postDelayed({ listenForRecordName() }, 500) }
     }
 
     private fun listenForSaveCommand() {
@@ -857,12 +846,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
 
-        try {
-            speechRecognizer.startListening(intent)
-        } catch (e: Exception) {
-            isListening = false
-            handler.postDelayed({ listenForSaveCommand() }, 2000)
-        }
+        launchRecognition(intent) { handler.postDelayed({ listenForSaveCommand() }, 2000) }
     }
 
     private fun showNameDialogThenSave() {
@@ -995,6 +979,49 @@ val uid = "utt_${System.currentTimeMillis()}"
         }
     }
 
+    // ── Bluetooth SCO (glasses mic) ────────────────────────────────────────────
+
+    private fun launchRecognition(intent: Intent, onFail: () -> Unit) {
+        val doStart = {
+            try {
+                speechRecognizer.startListening(intent)
+            } catch (e: Exception) {
+                isListening = false
+                onFail()
+            }
+        }
+        if (scoConnected) {
+            doStart()
+            return
+        }
+        pendingSpeechStart = doStart
+        if (scoReceiver == null) {
+            val receiver = object : android.content.BroadcastReceiver() {
+                override fun onReceive(context: android.content.Context, intent: Intent) {
+                    val state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)
+                    if (state == AudioManager.SCO_AUDIO_STATE_CONNECTED) {
+                        scoConnected = true
+                        pendingSpeechStart?.invoke()
+                        pendingSpeechStart = null
+                    } else if (state == AudioManager.SCO_AUDIO_STATE_DISCONNECTED) {
+                        scoConnected = false
+                    }
+                }
+            }
+            scoReceiver = receiver
+            registerReceiver(receiver, android.content.IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED))
+        }
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        audioManager.startBluetoothSco()
+        // 2s fallback — if glasses don't support HFP, fall back to phone mic
+        handler.postDelayed({
+            if (!scoConnected && pendingSpeechStart != null) {
+                pendingSpeechStart?.invoke()
+                pendingSpeechStart = null
+            }
+        }, 2000)
+    }
+
     // ── Lifecycle ──────────────────────────────────────────────────────────────
 
     override fun onDestroy() {
@@ -1010,6 +1037,11 @@ val uid = "utt_${System.currentTimeMillis()}"
                 locationManager.removeUpdates(locationListener)
             }
         } catch (e: Exception) { /* ignore */ }
+
+        scoReceiver?.let { try { unregisterReceiver(it) } catch (_: Exception) {} }
+        scoReceiver = null
+        try { audioManager.stopBluetoothSco() } catch (_: Exception) {}
+        audioManager.mode = AudioManager.MODE_NORMAL
 
         tts.shutdown()
         speechRecognizer.destroy()
